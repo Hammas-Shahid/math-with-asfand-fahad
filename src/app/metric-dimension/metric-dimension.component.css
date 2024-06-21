@@ -1,0 +1,11 @@
+/* app-metric-dimension.component.css */
+.table-container {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.mat-input-element {
+  width: 60px; /* Adjust the width as needed */
+  padding: 0;
+  margin: 0;
+}
