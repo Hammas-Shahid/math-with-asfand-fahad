@@ -37,7 +37,7 @@
 </div>
 
 <div *ngIf="resolvingSets.length > 0">
-  <h3>Resolving Sets:</h3>
+  <h3>All Resolving Sets:</h3>
   <ul>
     <li *ngFor="let set of resolvingSets">
       {{'{'}}<span *ngFor="let vertex of set; let last = last">
@@ -45,4 +45,16 @@
       </span>{{'}'}}
     </li>
   </ul>
+</div>
+
+<div *ngIf="minCardinalitySets.length > 0">
+  <h3>Minimum Cardinality Resolving Sets:</h3>
+  <ul>
+    <li *ngFor="let set of minCardinalitySets">
+      {{'{'}}<span *ngFor="let vertex of set; let last = last">
+        v<sub>{{vertex.substring(1)}}</sub>{{!last ? ', ' : ''}}
+      </span>{{'}'}}
+    </li>
+  </ul>
+  <div style="display: flex"><span style="font-weight: 600">Metric Dimension:</span>&nbsp;{{metricDimension}}</div>
 </div>

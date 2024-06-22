@@ -10,6 +10,8 @@ export class MetricDimensionComponent {
   table: (number | null)[][] = [];
   displayedColumns: string[] = [];
   resolvingSets: string[][] = [];
+  minCardinalitySets: string[][] = [];
+  metricDimension: number = 0;
 
   generateTable(): void {
     this.table = Array.from({ length: this.n }, () => Array.from({ length: this.n }, () => null));
@@ -31,6 +33,7 @@ export class MetricDimensionComponent {
   findResolvingSets(): void {
     this.resolvingSets = this.calculateResolvingSets();
     this.sortResolvingSets();
+    this.findMinCardinalitySets();
   }
 
   private calculateResolvingSets(): string[][] {
@@ -70,6 +73,18 @@ export class MetricDimensionComponent {
 
   private sortResolvingSets(): void {
     this.resolvingSets.sort((a, b) => a.length - b.length || a.join('').localeCompare(b.join('')));
+  }
+
+  private findMinCardinalitySets(): void {
+    if (this.resolvingSets.length === 0) {
+      this.minCardinalitySets = [];
+      this.metricDimension = 0;
+      return;
+    }
+
+    const minCardinality = this.resolvingSets[0].length;
+    this.minCardinalitySets = this.resolvingSets.filter(set => set.length === minCardinality);
+    this.metricDimension = minCardinality;
   }
 
   protected readonly String = String;
