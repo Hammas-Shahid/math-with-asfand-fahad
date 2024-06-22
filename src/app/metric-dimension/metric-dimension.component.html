@@ -17,7 +17,7 @@
     </ng-container>
 
     <!-- Define Other Columns -->
-    <ng-container [matColumnDef]="'col' + i" *ngFor="let col of displayedColumns.slice(1); let i = index">
+    <ng-container *ngFor="let col of displayedColumns.slice(1); let i = index" [matColumnDef]="col">
       <th mat-header-cell *matHeaderCellDef> v<sub>{{i + 1}}</sub> </th>
       <td mat-cell *matCellDef="let row; let j = index">
         <input matInput type="number" [value]="row[i]" (input)="updateValue(j, i, $event)" class="mat-input-element">
@@ -28,4 +28,21 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
   </table>
+</div>
+
+<div>
+  <button mat-raised-button color="accent" (click)="findResolvingSets()" aria-label="Find resolving sets">
+    Find Resolving Sets
+  </button>
+</div>
+
+<div *ngIf="resolvingSets.length > 0">
+  <h3>Resolving Sets:</h3>
+  <ul>
+    <li *ngFor="let set of resolvingSets">
+      {{'{'}}<span *ngFor="let vertex of set; let last = last">
+        v<sub>{{vertex.substring(1)}}</sub>{{!last ? ', ' : ''}}
+      </span>{{'}'}}
+    </li>
+  </ul>
 </div>
