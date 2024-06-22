@@ -1,12 +1,17 @@
-<div>
-  <mat-form-field appearance="fill">
-    <mat-label>Number of dimensions</mat-label>
-    <input matInput type="number" placeholder="Enter n" [(ngModel)]="n" aria-label="Number of dimensions">
-  </mat-form-field>
-  <button mat-raised-button color="primary" (click)="generateTable()" aria-label="Generate table">
-    Generate Table
-  </button>
+<div style="display: flex">
+<h2 style="padding: 6px">Find Resolving Sets and Metric Dimensions</h2>
+  <div style="margin: 6px 0 0 10px;">
+    <mat-form-field appearance="fill">
+      <mat-label>Number of dimensions</mat-label>
+      <input matInput type="number" placeholder="Enter n" [(ngModel)]="n" aria-label="Number of dimensions">
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="generateTable()" aria-label="Generate table" style="margin-left: 6px">
+      Generate Table
+    </button>
+  </div>
+
 </div>
+<div class="padding-10p">
 
 <div class="table-container">
   <table mat-table [dataSource]="table" class="mat-elevation-z8" *ngIf="table.length > 0">
@@ -31,30 +36,7 @@
 </div>
 
 <div>
-  <button mat-raised-button color="accent" (click)="findResolvingSets()" aria-label="Find resolving sets">
-    Find Resolving Sets
+  <button mat-raised-button color="primary" (click)="findResolvingSets()" aria-label="Find resolving sets" style="padding: 10px" *ngIf="n>0">Get Results
   </button>
 </div>
-
-<div *ngIf="resolvingSets.length > 0">
-  <h3>All Resolving Sets:</h3>
-  <ul>
-    <li *ngFor="let set of resolvingSets">
-      {{'{'}}<span *ngFor="let vertex of set; let last = last">
-        v<sub>{{vertex.substring(1)}}</sub>{{!last ? ', ' : ''}}
-      </span>{{'}'}}
-    </li>
-  </ul>
-</div>
-
-<div *ngIf="minCardinalitySets.length > 0">
-  <h3>Minimum Cardinality Resolving Sets:</h3>
-  <ul>
-    <li *ngFor="let set of minCardinalitySets">
-      {{'{'}}<span *ngFor="let vertex of set; let last = last">
-        v<sub>{{vertex.substring(1)}}</sub>{{!last ? ', ' : ''}}
-      </span>{{'}'}}
-    </li>
-  </ul>
-  <div style="display: flex"><span style="font-weight: 600">Metric Dimension:</span>&nbsp;{{metricDimension}}</div>
 </div>

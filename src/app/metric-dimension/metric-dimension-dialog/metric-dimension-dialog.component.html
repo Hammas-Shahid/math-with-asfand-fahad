@@ -1,0 +1,28 @@
+
+<div mat-dialog-content class="dialog-content">
+  <button mat-icon-button mat-dialog-close class="close-button">
+    <mat-icon>close</mat-icon>
+  </button>
+  <div *ngIf="data.resolvingSets.length > 0">
+    <h3>All Resolving Sets:</h3>
+    <ul>
+      <li *ngFor="let set of data.resolvingSets">
+        {{'{'}}<span *ngFor="let vertex of set; let last = last">
+          v<sub>{{vertex.substring(1)}}</sub>{{!last ? ', ' : ''}}
+        </span>{{'}'}}
+      </li>
+    </ul>
+  </div>
+
+  <div *ngIf="data.minCardinalitySets.length > 0">
+    <h3>Minimum Cardinality Resolving Sets:</h3>
+    <ul>
+      <li *ngFor="let set of data.minCardinalitySets">
+        {{'{'}}<span *ngFor="let vertex of set; let last = last">
+          v<sub>{{vertex.substring(1)}}</sub>{{!last ? ', ' : ''}}
+        </span>{{'}'}}
+      </li>
+    </ul>
+    <h3>Metric Dimension: <span style="font-weight: normal">{{data.metricDimension}}</span></h3>
+  </div>
+</div>

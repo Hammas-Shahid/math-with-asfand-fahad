@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MetricDimensionDialogComponent } from './metric-dimension-dialog/metric-dimension-dialog.component';
 
 @Component({
   selector: 'app-metric-dimension',
@@ -12,6 +14,8 @@ export class MetricDimensionComponent {
   resolvingSets: string[][] = [];
   minCardinalitySets: string[][] = [];
   metricDimension: number = 0;
+
+  constructor(public dialog: MatDialog) {}
 
   generateTable(): void {
     this.table = Array.from({ length: this.n }, () => Array.from({ length: this.n }, () => null));
@@ -34,6 +38,7 @@ export class MetricDimensionComponent {
     this.resolvingSets = this.calculateResolvingSets();
     this.sortResolvingSets();
     this.findMinCardinalitySets();
+    this.openDialog();
   }
 
   private calculateResolvingSets(): string[][] {
@@ -85,6 +90,17 @@ export class MetricDimensionComponent {
     const minCardinality = this.resolvingSets[0].length;
     this.minCardinalitySets = this.resolvingSets.filter(set => set.length === minCardinality);
     this.metricDimension = minCardinality;
+  }
+
+  openDialog(): void {
+    this.dialog.open(MetricDimensionDialogComponent, {
+      width: '600px',
+      data: {
+        resolvingSets: this.resolvingSets,
+        minCardinalitySets: this.minCardinalitySets,
+        metricDimension: this.metricDimension
+      }
+    });
   }
 
   protected readonly String = String;

@@ -1,0 +1,28 @@
+.dialog-content {
+  padding: 20px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+h3 {
+  margin-top: 0;
+}
+
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+li {
+  margin-bottom: 10px;
+}
+
+mat-dialog-actions {
+  justify-content: flex-end;
+}
+
+.close-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
