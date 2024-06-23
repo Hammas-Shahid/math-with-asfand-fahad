@@ -1,0 +1,30 @@
+<div class="dashboard">
+  <div class="card-container">
+    <mat-card class="card" (click)="openPinDialog('information-system')">
+      <mat-card-header>
+        <mat-card-title>Information System Calculator</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Calculate various information systems.</p>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="card" (click)="openPinDialog('metric-dimension')">
+      <mat-card-header>
+        <mat-card-title>Metric Dimension Calculator</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Calculate various metrics dimensions.</p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="card" (click)="openPinDialog('vector-calculator')">
+      <mat-card-header>
+        <mat-card-title>Vector Calculator</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Perform vector calculations.</p>
+      </mat-card-content>
+    </mat-card>
+    <!-- Add more cards for other calculators as needed -->
+  </div>
+</div>

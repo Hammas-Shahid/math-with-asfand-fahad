@@ -1,0 +1,46 @@
+<div class="vector-calculator">
+  <div style="display: flex; justify-content: space-between; align-items: center">
+    <h2>Vector Calculator</h2>
+    <div style="display: flex;">
+      <button mat-raised-button color="primary" (click)="exportToLaTeX()" *ngIf="resultsVisible">Export to LaTeX</button>
+      <button mat-raised-button color="primary" (click)="exportToPDF()" *ngIf="resultsVisible" style="margin-left:20px">Export to PDF</button>
+      <button mat-raised-button color="primary" (click)="calculateVectorsAndDistances()" style="margin-left:20px">Calculate</button>
+    </div>
+  </div>
+  <form [formGroup]="form">
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Enter variables (comma-separated)</mat-label>
+      <input matInput formControlName="vars" type="text" placeholder="e.g., 91.143, 52.6, 41.17, 151.32, 68.134">
+    </mat-form-field>
+  </form>
+
+  <div class="results" *ngIf="resultsVisible">
+    <h3>Vectors</h3>
+    <table class="result-table">
+      <tr>
+        <th></th>
+        <th>Variable</th>
+        <th>Max Diff</th>
+        <th>Sum Diff</th>
+      </tr>
+      <tr *ngFor="let vector of vectors; let i = index">
+        <td><span [innerHTML]="vectorLabels[i]"></span></td>
+        <td>{{ vector[0].toFixed(3) }}</td>
+        <td>{{ vector[1].toFixed(3) }}</td>
+        <td>{{ vector[2].toFixed(3) }}</td>
+      </tr>
+    </table>
+
+    <h3>Distance Matrix</h3>
+    <table class="result-table">
+      <tr>
+        <th></th>
+        <th *ngFor="let label of vectorLabels"><span [innerHTML]="label"></span></th>
+      </tr>
+      <tr *ngFor="let row of distanceMatrix; let i = index">
+        <th><span [innerHTML]="vectorLabels[i]"></span></th>
+        <td *ngFor="let value of row">{{ value.toFixed(3) }}</td>
+      </tr>
+    </table>
+  </div>
+</div>

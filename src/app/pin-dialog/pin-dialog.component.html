@@ -1,0 +1,14 @@
+<h1 mat-dialog-title>Enter PIN</h1>
+<div mat-dialog-content>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <mat-form-field>
+      <mat-label>PIN</mat-label>
+      <input matInput type="password" formControlName="pin">
+      <mat-error *ngIf="form.get('pin')?.hasError('incorrect')">Incorrect PIN. Please try again.</mat-error>
+      <mat-error *ngIf="form.get('pin')?.hasError('required')">PIN is required.</mat-error>
+    </mat-form-field>
+    <div mat-dialog-actions>
+      <button mat-button type="submit" [disabled]="form.invalid">Submit</button>
+    </div>
+  </form>
+</div>

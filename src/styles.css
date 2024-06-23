@@ -2,3 +2,22 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.mat-card {
+  margin: 16px;
+  padding: 0;
+}
+
+.mat-card-header {
+  padding: 16px;
+  font-size: 1.25em;
+  font-weight: 500;
+}
+
+.mat-card-content {
+  padding: 16px;
+}
+
+.mat-card-actions {
+  padding: 8px 16px;
+}

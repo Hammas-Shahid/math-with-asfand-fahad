@@ -1,44 +1,59 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import {MatTableModule} from "@angular/material/table";
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {ReactiveFormsModule} from "@angular/forms";
-import {MatFormField, MatInput} from "@angular/material/input";
-import {MatOption, MatSelect, MatSelectModule} from "@angular/material/select";
-import {MatTooltip} from "@angular/material/tooltip";
-import {MatMenu, MatMenuTrigger} from "@angular/material/menu";
-import {MatRadioButton, MatRadioGroup} from "@angular/material/radio";
-import {MatCheckbox} from "@angular/material/checkbox";
+import { HeaderComponent } from './header/header.component';
+
+import { MatTableModule } from '@angular/material/table';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatCardModule } from '@angular/material/card';
+import { PinDialogComponent } from './pin-dialog/pin-dialog.component';
+import {CalculatorPinGuard} from "./guards/calculator-pin.guard";
+import {AuthService} from "./auth.service";
+import {DashboardComponent} from "./dashboard/dashboard.component";
+import {CalculatorsModule} from "./calculators/calculators.module";
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    HeaderComponent,
+    PinDialogComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
+    FormsModule,
+    ReactiveFormsModule,
     AppRoutingModule,
     MatTableModule,
+    MatInputModule,
+    MatFormFieldModule,
     MatSelectModule,
-    BrowserAnimationsModule,
-    ReactiveFormsModule,
-    MatInput,
-    MatFormField,
-    MatSelect,
-    MatOption,
-    MatTooltip,
-    MatMenu,
-    MatMenuTrigger,
-    MatRadioGroup,
-    MatRadioButton,
-    MatCheckbox
+    MatTooltipModule,
+    MatMenuModule,
+    MatRadioModule,
+    MatCheckboxModule,
+    MatIconModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatToolbarModule,
+    MatCardModule,
   ],
-  providers: [
-    provideAnimationsAsync()
-  ],
+  providers: [CalculatorPinGuard, AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
