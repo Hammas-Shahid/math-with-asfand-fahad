@@ -6,7 +6,7 @@ import { AuthService } from '../auth.service';
 @Component({
   selector: 'app-pin-dialog',
   templateUrl: './pin-dialog.component.html',
-  styleUrls: ['./pin-dialog.component.scss']
+  styleUrls: ['./pin-dialog.component.css']
 })
 export class PinDialogComponent {
   form: FormGroup;

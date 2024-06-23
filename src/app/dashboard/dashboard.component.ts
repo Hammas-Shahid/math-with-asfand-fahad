@@ -7,7 +7,7 @@ import { AuthService } from '../auth.service';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent {
   constructor(private dialog: MatDialog, private router: Router, private authService: AuthService) {}

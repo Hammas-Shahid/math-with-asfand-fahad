@@ -21,13 +21,15 @@ import {MatMenu, MatMenuTrigger} from "@angular/material/menu";
 import {MatCheckbox} from "@angular/material/checkbox";
 import {MatRadioButton, MatRadioGroup} from "@angular/material/radio";
 import {MatOption, MatSelect} from "@angular/material/select";
+import { DirectDistanceComponent } from './direct-distance/direct-distance.component';
 
 @NgModule({
   declarations: [
     MetricDimensionComponent,
     MetricDimensionDialogComponent,
     VectorCalculatorComponent,
-    InformationSystemComponent
+    InformationSystemComponent,
+    DirectDistanceComponent
   ],
   imports: [
     CommonModule,

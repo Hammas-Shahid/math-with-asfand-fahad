@@ -1,0 +1,31 @@
+.direct-distance-calculator {
+  padding: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.results {
+  margin-top: 16px;
+}
+
+.result-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 16px;
+}
+
+.result-table th, .result-table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: right;
+}
+
+.result-table th:first-child, .result-table td:first-child {
+  text-align: left;
+}
+
+button {
+  margin-top: 16px;
+}

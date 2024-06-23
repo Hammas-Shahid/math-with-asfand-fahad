@@ -9,7 +9,8 @@ export class AuthService {
   private pins: { [key: string]: string } = {
     'metric-dimension': 'qwerty9211',
     'vector-calculator': 'kholo2',
-    'information-system': 'asdf420'
+    'information-system': 'asdf420',
+    'direct-distance': 'kholo2'
   };
 
   isRouteVerified(route: string): boolean {

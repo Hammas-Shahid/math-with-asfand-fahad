@@ -3,14 +3,12 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { saveAs } from 'file-saver';
 
 @Component({
-  selector: 'app-vector-calculator',
-  templateUrl: './vector-calculator.component.html',
-  styleUrls: ['./vector-calculator.component.css']
+  selector: 'app-direct-distance',
+  templateUrl: './direct-distance.component.html',
+  styleUrls: ['./direct-distance.component.css']
 })
-export class VectorCalculatorComponent {
+export class DirectDistanceComponent {
   form: FormGroup;
-  vectors: number[][] = [];
-  distanceMatrix: number[][] = [];
   directDistanceMatrix: number[][] = [];
   vectorLabels: string[] = [];
   vectorLabelsForExport: string[] = [];
@@ -22,39 +20,18 @@ export class VectorCalculatorComponent {
     });
   }
 
-  calculateVectorsAndDistances() {
+  calculateDirectDistances() {
     const varValues = this.form.get('vars')?.value.split(',').map(Number);
     if (varValues.length === 0) {
-      this.vectors = [];
-      this.distanceMatrix = [];
       this.directDistanceMatrix = [];
       this.resultsVisible = false;
       return;
     }
 
-    this.vectors = varValues.map((varValue: any) => this.vectorFunction(varValue, varValues));
-    this.distanceMatrix = this.calculateDistanceMatrix(this.vectors);
     this.directDistanceMatrix = this.calculateDirectDistanceMatrix(varValues);
-    this.vectorLabels = this.vectors.map((_, index) => `v<sub>${index + 1}</sub>`);
-    this.vectorLabelsForExport = this.vectors.map((_, index) => `v_{${index + 1}}`);
+    this.vectorLabels = varValues.map((_: any, index: any) => `v<sub>${index + 1}</sub>`);
+    this.vectorLabelsForExport = varValues.map((_: any, index: any) => `v_{${index + 1}}`);
     this.resultsVisible = true;
-  }
-
-  vectorFunction(varValue: number, allVars: number[]): number[] {
-    const otherVars = allVars.filter((v) => v !== varValue);
-    const maxDiff = Math.max(...otherVars.map((v) => Math.abs(varValue - v))) / varValue;
-    const sumDiff = otherVars.reduce((sum, v) => sum + Math.abs(varValue - v), 0) / varValue / allVars.length;
-    return [varValue, maxDiff, sumDiff];
-  }
-
-  calculateDistanceMatrix(vectors: number[][]): number[][] {
-    const distanceMatrix: number[][] = Array(vectors.length).fill(null).map(() => Array(vectors.length).fill(0));
-    for (let i = 0; i < vectors.length; i++) {
-      for (let j = 0; j < vectors.length; j++) {
-        distanceMatrix[i][j] = Math.sqrt(vectors[i].reduce((sum, value, index) => sum + Math.pow(value - vectors[j][index], 2), 0));
-      }
-    }
-    return distanceMatrix;
   }
 
   calculateDirectDistanceMatrix(vars: number[]): number[][] {
@@ -68,24 +45,12 @@ export class VectorCalculatorComponent {
   }
 
   exportToLaTeX() {
-    const vectorsLatex = this.arrayToLatex(this.vectors, this.vectorLabelsForExport);
-    const distanceMatrixLatex = this.arrayToLatex(this.distanceMatrix, this.vectorLabelsForExport, this.vectorLabelsForExport);
     const directDistanceMatrixLatex = this.arrayToLatex(this.directDistanceMatrix, this.vectorLabelsForExport, this.vectorLabelsForExport);
 
     const latexContent = `
       \\documentclass{article}
       \\usepackage{amsmath}
       \\begin{document}
-      Vectors:\\\\[5pt]
-      \\[
-      ${vectorsLatex}
-      \\]
-      \\\\[10pt]
-      Distance Matrix (Vectors):\\\\[5pt]
-      \\[
-      ${distanceMatrixLatex}
-      \\]
-      \\\\[10pt]
       Direct Distance Matrix:\\\\[5pt]
       \\[
       ${directDistanceMatrixLatex}
@@ -94,28 +59,16 @@ export class VectorCalculatorComponent {
     `;
 
     const blob = new Blob([latexContent], { type: 'text/plain' });
-    saveAs(blob, 'vectors.tex');
+    saveAs(blob, 'direct_distance_matrix.tex');
   }
 
   exportToPDF() {
-    const vectorsLatex = this.arrayToLatex(this.vectors, this.vectorLabelsForExport);
-    const distanceMatrixLatex = this.arrayToLatex(this.distanceMatrix, this.vectorLabelsForExport, this.vectorLabelsForExport);
     const directDistanceMatrixLatex = this.arrayToLatex(this.directDistanceMatrix, this.vectorLabelsForExport, this.vectorLabelsForExport);
 
     const latexContent = `
       \\documentclass{article}
       \\usepackage{amsmath}
       \\begin{document}
-      Vectors:\\\\[5pt]
-      \\[
-      ${vectorsLatex}
-      \\]
-      \\\\[10pt]
-      Distance Matrix (Vectors):\\\\[5pt]
-      \\[
-      ${distanceMatrixLatex}
-      \\]
-      \\\\[10pt]
       Direct Distance Matrix:\\\\[5pt]
       \\[
       ${directDistanceMatrixLatex}
