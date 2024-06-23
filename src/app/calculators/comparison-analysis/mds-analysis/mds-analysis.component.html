@@ -1,0 +1,30 @@
+<div class="mds-analysis">
+  <h3>Multidimensional Scaling Result</h3>
+  <div *ngIf="mdsResult1.length">
+    <h4>MDS for Distance Matrix</h4>
+    <table class="result-table">
+      <tr>
+        <th>Dimension 1</th>
+        <th>Dimension 2</th>
+      </tr>
+      <tr *ngFor="let point of mdsResult1">
+        <td>{{ point[0].toFixed(3) }}</td>
+        <td>{{ point[1].toFixed(3) }}</td>
+      </tr>
+    </table>
+  </div>
+
+  <div *ngIf="mdsResult2.length">
+    <h4>MDS for Direct Distance Matrix</h4>
+    <table class="result-table">
+      <tr>
+        <th>Dimension 1</th>
+        <th>Dimension 2</th>
+      </tr>
+      <tr *ngFor="let point of mdsResult2">
+        <td>{{ point[0].toFixed(3) }}</td>
+        <td>{{ point[1].toFixed(3) }}</td>
+      </tr>
+    </table>
+  </div>
+</div>

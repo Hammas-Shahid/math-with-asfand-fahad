@@ -3,18 +3,22 @@
   <form [formGroup]="form1">
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Enter variables for Distance Matrix (comma-separated)</mat-label>
-      <input matInput formControlName="vars1" type="text" placeholder="e.g., 91.143, 52.6, 41.17, 151.32, 68.134">
+      <input matInput formControlName="vars1" type="text" placeholder="e.g., 1, 2, 3, 4">
     </mat-form-field>
   </form>
   <form [formGroup]="form2">
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Enter variables for Direct Distance Matrix (comma-separated)</mat-label>
-      <input matInput formControlName="vars2" type="text" placeholder="e.g., 81.143, 42.6, 31.17, 141.32, 58.134">
+      <input matInput formControlName="vars2" type="text" placeholder="e.g., 4, 3, 2, 1">
     </mat-form-field>
     <button mat-raised-button color="primary" (click)="calculateDataAndDistances()">Calculate</button>
   </form>
 
   <div class="results" *ngIf="resultsVisible">
     <app-regression-analysis [distanceMatrix]="distanceMatrix" [directDistanceMatrix]="directDistanceMatrix"></app-regression-analysis>
+    <app-mantel-test-analysis [distanceMatrix]="distanceMatrix" [directDistanceMatrix]="directDistanceMatrix"></app-mantel-test-analysis>
+    <app-mds-analysis [distanceMatrix]="distanceMatrix" [directDistanceMatrix]="directDistanceMatrix"></app-mds-analysis>
+    <app-pca-analysis [distanceMatrix]="distanceMatrix" [directDistanceMatrix]="directDistanceMatrix"></app-pca-analysis>
+    <app-heatmap-analysis [distanceMatrix]="distanceMatrix" [directDistanceMatrix]="directDistanceMatrix"></app-heatmap-analysis>
   </div>
 </div>

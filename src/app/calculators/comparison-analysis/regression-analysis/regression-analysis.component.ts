@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import * as math from 'mathjs';
 
 @Component({
@@ -6,30 +6,47 @@ import * as math from 'mathjs';
   templateUrl: './regression-analysis.component.html',
   styleUrls: ['./regression-analysis.component.css']
 })
-export class RegressionAnalysisComponent implements OnChanges {
-  @Input() distanceMatrix: number[][] = [];
-  @Input() directDistanceMatrix: number[][] = [];
+export class RegressionAnalysisComponent {
+  private _distanceMatrix: number[][] = [];
+  private _directDistanceMatrix: number[][] = [];
   regressionResult: any = null;
 
-  ngOnChanges() {
-    if (this.distanceMatrix.length && this.directDistanceMatrix.length) {
-      this.performRegressionAnalysis();
-    }
+  @Input()
+  set distanceMatrix(value: number[][]) {
+    console.log('adsfa')
+    this._distanceMatrix = value;
+    this.performRegressionAnalysis();
+  }
+
+  @Input()
+  set directDistanceMatrix(value: number[][]) {
+    this._directDistanceMatrix = value;
+    this.performRegressionAnalysis();
+  }
+
+  get distanceMatrix(): number[][] {
+    return this._distanceMatrix;
+  }
+
+  get directDistanceMatrix(): number[][] {
+    return this._directDistanceMatrix;
   }
 
   performRegressionAnalysis() {
-    const x = this.distanceMatrix.flat();
-    const y = this.directDistanceMatrix.flat();
+    if (this._distanceMatrix.length && this._directDistanceMatrix.length) {
+      const x = this._distanceMatrix.flat();
+      const y = this._directDistanceMatrix.flat();
 
-    const sumX = math.sum(x);
-    const sumY = math.sum(y);
-    const sumXY = math.sum(x.map((xi, i) => xi * y[i]));
-    const sumX2 = math.sum(x.map(xi => xi * xi));
-    const n = x.length;
+      const sumX = math.sum(x);
+      const sumY = math.sum(y);
+      const sumXY = math.sum(x.map((xi, i) => xi * y[i]));
+      const sumX2 = math.sum(x.map(xi => xi * xi));
+      const n = x.length;
 
-    const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
-    const intercept = (sumY - slope * sumX) / n;
+      const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+      const intercept = (sumY - slope * sumX) / n;
 
-    this.regressionResult = { slope, intercept };
+      this.regressionResult = { slope, intercept };
+    }
   }
 }
