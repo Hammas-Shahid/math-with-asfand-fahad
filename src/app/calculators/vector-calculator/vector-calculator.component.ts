@@ -11,6 +11,7 @@ export class VectorCalculatorComponent {
   form: FormGroup;
   vectors: number[][] = [];
   distanceMatrix: number[][] = [];
+  directDistanceMatrix: number[][] = [];
   vectorLabels: string[] = [];
   vectorLabelsForExport: string[] = [];
   resultsVisible = false;
@@ -26,12 +27,14 @@ export class VectorCalculatorComponent {
     if (varValues.length === 0) {
       this.vectors = [];
       this.distanceMatrix = [];
+      this.directDistanceMatrix = [];
       this.resultsVisible = false;
       return;
     }
 
     this.vectors = varValues.map((varValue: any) => this.vectorFunction(varValue, varValues));
     this.distanceMatrix = this.calculateDistanceMatrix(this.vectors);
+    this.directDistanceMatrix = this.calculateDirectDistanceMatrix(varValues);
     this.vectorLabels = this.vectors.map((_, index) => `v<sub>${index + 1}</sub>`);
     this.vectorLabelsForExport = this.vectors.map((_, index) => `v_{${index + 1}}`);
     this.resultsVisible = true;
@@ -54,9 +57,20 @@ export class VectorCalculatorComponent {
     return distanceMatrix;
   }
 
+  calculateDirectDistanceMatrix(vars: number[]): number[][] {
+    const distanceMatrix: number[][] = Array(vars.length).fill(null).map(() => Array(vars.length).fill(0));
+    for (let i = 0; i < vars.length; i++) {
+      for (let j = 0; j < vars.length; j++) {
+        distanceMatrix[i][j] = Math.sqrt(Math.pow(vars[i] - vars[j], 2));
+      }
+    }
+    return distanceMatrix;
+  }
+
   exportToLaTeX() {
     const vectorsLatex = this.arrayToLatex(this.vectors, this.vectorLabelsForExport);
     const distanceMatrixLatex = this.arrayToLatex(this.distanceMatrix, this.vectorLabelsForExport, this.vectorLabelsForExport);
+    const directDistanceMatrixLatex = this.arrayToLatex(this.directDistanceMatrix, this.vectorLabelsForExport, this.vectorLabelsForExport);
 
     const latexContent = `
       \\documentclass{article}
@@ -67,9 +81,14 @@ export class VectorCalculatorComponent {
       ${vectorsLatex}
       \\]
       \\\\[10pt]
-      Distance Matrix:\\\\[5pt]
+      Distance Matrix (Vectors):\\\\[5pt]
       \\[
       ${distanceMatrixLatex}
+      \\]
+      \\\\[10pt]
+      Direct Distance Matrix:\\\\[5pt]
+      \\[
+      ${directDistanceMatrixLatex}
       \\]
       \\end{document}
     `;
@@ -81,6 +100,7 @@ export class VectorCalculatorComponent {
   exportToPDF() {
     const vectorsLatex = this.arrayToLatex(this.vectors, this.vectorLabelsForExport);
     const distanceMatrixLatex = this.arrayToLatex(this.distanceMatrix, this.vectorLabelsForExport, this.vectorLabelsForExport);
+    const directDistanceMatrixLatex = this.arrayToLatex(this.directDistanceMatrix, this.vectorLabelsForExport, this.vectorLabelsForExport);
 
     const latexContent = `
       \\documentclass{article}
@@ -91,9 +111,14 @@ export class VectorCalculatorComponent {
       ${vectorsLatex}
       \\]
       \\\\[10pt]
-      Distance Matrix:\\\\[5pt]
+      Distance Matrix (Vectors):\\\\[5pt]
       \\[
       ${distanceMatrixLatex}
+      \\]
+      \\\\[10pt]
+      Direct Distance Matrix:\\\\[5pt]
+      \\[
+      ${directDistanceMatrixLatex}
       \\]
       \\end{document}
     `;
