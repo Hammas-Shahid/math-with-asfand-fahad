@@ -22,6 +22,8 @@ import {MatCheckbox} from "@angular/material/checkbox";
 import {MatRadioButton, MatRadioGroup} from "@angular/material/radio";
 import {MatOption, MatSelect} from "@angular/material/select";
 import { DirectDistanceComponent } from './direct-distance/direct-distance.component';
+import { ComparisonAnalysisComponent } from './comparison-analysis/comparison-analysis.component';
+import { RegressionAnalysisComponent } from './comparison-analysis/regression-analysis/regression-analysis.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,9 @@ import { DirectDistanceComponent } from './direct-distance/direct-distance.compo
     MetricDimensionDialogComponent,
     VectorCalculatorComponent,
     InformationSystemComponent,
-    DirectDistanceComponent
+    DirectDistanceComponent,
+    ComparisonAnalysisComponent,
+    RegressionAnalysisComponent
   ],
   imports: [
     CommonModule,

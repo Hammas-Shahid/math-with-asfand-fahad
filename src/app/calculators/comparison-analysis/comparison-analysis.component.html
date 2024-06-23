@@ -1,0 +1,20 @@
+<div class="comparison-analysis">
+  <h2>Comparison Analysis</h2>
+  <form [formGroup]="form1">
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Enter variables for Distance Matrix (comma-separated)</mat-label>
+      <input matInput formControlName="vars1" type="text" placeholder="e.g., 91.143, 52.6, 41.17, 151.32, 68.134">
+    </mat-form-field>
+  </form>
+  <form [formGroup]="form2">
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Enter variables for Direct Distance Matrix (comma-separated)</mat-label>
+      <input matInput formControlName="vars2" type="text" placeholder="e.g., 81.143, 42.6, 31.17, 141.32, 58.134">
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="calculateDataAndDistances()">Calculate</button>
+  </form>
+
+  <div class="results" *ngIf="resultsVisible">
+    <app-regression-analysis [distanceMatrix]="distanceMatrix" [directDistanceMatrix]="directDistanceMatrix"></app-regression-analysis>
+  </div>
+</div>

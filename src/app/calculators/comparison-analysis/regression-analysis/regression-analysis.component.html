@@ -1,0 +1,7 @@
+<div class="regression-analysis">
+  <h3>Regression Analysis Result</h3>
+  <div *ngIf="regressionResult">
+    <p>Slope: {{ regressionResult.slope.toFixed(3) }}</p>
+    <p>Intercept: {{ regressionResult.intercept.toFixed(3) }}</p>
+  </div>
+</div>

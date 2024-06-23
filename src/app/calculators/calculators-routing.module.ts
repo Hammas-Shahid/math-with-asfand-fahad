@@ -5,12 +5,14 @@ import { VectorCalculatorComponent } from './vector-calculator/vector-calculator
 import { CalculatorPinGuard } from '../guards/calculator-pin.guard';
 import {InformationSystemComponent} from "./information-system/information-system.component";
 import {DirectDistanceComponent} from "./direct-distance/direct-distance.component";
+import {ComparisonAnalysisComponent} from "./comparison-analysis/comparison-analysis.component";
 
 const routes: Routes = [
   { path: 'metric-dimension', component: MetricDimensionComponent, canActivate: [CalculatorPinGuard] },
   { path: 'vector-calculator', component: VectorCalculatorComponent, canActivate: [CalculatorPinGuard] },
   { path: 'information-system', component: InformationSystemComponent, canActivate: [CalculatorPinGuard] },
-  { path: 'direct-distance', component: DirectDistanceComponent, canActivate: [CalculatorPinGuard] }
+  { path: 'direct-distance', component: DirectDistanceComponent, canActivate: [CalculatorPinGuard] },
+  { path: 'comparison-analysis', component: ComparisonAnalysisComponent }
 ];
 
 @NgModule({
