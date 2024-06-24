@@ -9,10 +9,9 @@
       Generate Table
     </button>
   </div>
-
 </div>
-<div class="padding-10p">
 
+<div class="padding-10p">
   <div class="table-container">
     <table mat-table [dataSource]="table" class="mat-elevation-z8" *ngIf="table.length > 0">
       <!-- Header Column -->
@@ -36,7 +35,6 @@
   </div>
 
   <div>
-    <button mat-raised-button color="primary" (click)="findResolvingSets()" aria-label="Find resolving sets" style="padding: 10px" *ngIf="n>0">Get Results
-    </button>
+    <button mat-raised-button color="primary" (click)="findResolvingSets()" aria-label="Find resolving sets" style="padding: 10px" *ngIf="n > 0">Get Results</button>
   </div>
 </div>

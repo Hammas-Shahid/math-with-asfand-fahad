@@ -1,4 +1,3 @@
-
 <div mat-dialog-content class="dialog-content">
   <button style="margin-right: 16px" mat-icon-button mat-dialog-close class="close-button">
     <mat-icon>close</mat-icon>
@@ -23,6 +22,17 @@
         </span>{{'}'}}
       </li>
     </ul>
-    <h3>Metric Dimension: <span style="font-weight: normal">{{data.metricDimension}}</span></h3>
   </div>
+  <div *ngIf="data.minimalMetricSets.length > 0">
+    <h3>Minimal Cardinality Resolving Sets:</h3>
+    <ul>
+      <li *ngFor="let set of data.minimalMetricSets">
+        {{'{'}}<span *ngFor="let vertex of set; let last = last">
+          v<sub>{{vertex.substring(1)}}</sub>{{!last ? ', ' : ''}}
+        </span>{{'}'}}
+      </li>
+    </ul>
+  </div>
+    <h3>Metric Dimension: <span style="font-weight: normal">{{data.metricDimension}}</span></h3>
+
 </div>

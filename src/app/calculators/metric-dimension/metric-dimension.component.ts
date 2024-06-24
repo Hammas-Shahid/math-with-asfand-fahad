@@ -13,6 +13,7 @@ export class MetricDimensionComponent {
   displayedColumns: string[] = [];
   resolvingSets: string[][] = [];
   minCardinalitySets: string[][] = [];
+  minimalMetricSets: string[][] = [];
   metricDimension: number = 0;
 
   constructor(public dialog: MatDialog) {}
@@ -38,6 +39,7 @@ export class MetricDimensionComponent {
     this.resolvingSets = this.calculateResolvingSets();
     this.sortResolvingSets();
     this.findMinCardinalitySets();
+    this.findMinimalMetricSets();
     this.openDialog();
   }
 
@@ -92,13 +94,22 @@ export class MetricDimensionComponent {
     this.metricDimension = minCardinality;
   }
 
+  private findMinimalMetricSets(): void {
+    this.minimalMetricSets = this.resolvingSets.filter((set, index, self) =>
+      !self.some((otherSet, otherIndex) =>
+        otherIndex !== index && otherSet.every(v => set.includes(v))
+      )
+    );
+  }
+
   openDialog(): void {
     this.dialog.open(MetricDimensionDialogComponent, {
       width: '600px',
       data: {
         resolvingSets: this.resolvingSets,
         minCardinalitySets: this.minCardinalitySets,
-        metricDimension: this.metricDimension
+        metricDimension: this.metricDimension,
+        minimalMetricSets: this.minimalMetricSets
       }
     });
   }
