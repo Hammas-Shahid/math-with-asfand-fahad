@@ -51,7 +51,7 @@ export class DirectDistanceComponent {
       \\documentclass{article}
       \\usepackage{amsmath}
       \\begin{document}
-      Direct Distance Matrix:\\\\[5pt]
+      Distance Matrix for ????:\\\\[5pt]
       \\[
       ${directDistanceMatrixLatex}
       \\]

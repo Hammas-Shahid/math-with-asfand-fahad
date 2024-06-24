@@ -10,7 +10,8 @@ export class AuthService {
     'metric-dimension': 'qwerty9211',
     'vector-calculator': 'kholo2',
     'information-system': 'asdf420',
-    'direct-distance': 'kholo2'
+    'direct-distance': 'kholo2',
+    'comparison-analysis': 'asdf9211'
   };
 
   isRouteVerified(route: string): boolean {

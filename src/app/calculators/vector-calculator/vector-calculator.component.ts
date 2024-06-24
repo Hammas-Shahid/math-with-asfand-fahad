@@ -76,23 +76,22 @@ export class VectorCalculatorComponent {
       \\documentclass{article}
       \\usepackage{amsmath}
       \\begin{document}
-      Vectors:\\\\[5pt]
+      Feature Vector Corresponding to ???? Index:\\\\[5pt]
       \\[
       ${vectorsLatex}
       \\]
       \\\\[10pt]
-      Distance Matrix (Vectors):\\\\[5pt]
+      Distance Matrix For Feature Vectors Corresponding to ???? Index:\\\\[5pt]
       \\[
       ${distanceMatrixLatex}
       \\]
       \\\\[10pt]
-      Direct Distance Matrix:\\\\[5pt]
-      \\[
-      ${directDistanceMatrixLatex}
-      \\]
       \\end{document}
     `;
-
+  //   Direct Distance Matrix:\\\\[5pt]
+  //     \\[
+  //   ${directDistanceMatrixLatex}
+  // \\]
     const blob = new Blob([latexContent], { type: 'text/plain' });
     saveAs(blob, 'vectors.tex');
   }

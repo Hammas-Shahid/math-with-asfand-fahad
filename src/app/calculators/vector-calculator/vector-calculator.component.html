@@ -15,7 +15,7 @@
   </form>
 
   <div class="results" *ngIf="resultsVisible">
-    <h3>Vectors</h3>
+    <h3>Feature Vector Corresponding to ???? Index</h3>
     <table class="result-table">
       <tr>
         <th></th>
@@ -31,7 +31,7 @@
       </tr>
     </table>
 
-    <h3>Distance Matrix (Vectors)</h3>
+    <h3>Distance Matrix For Feature Vectors Corresponding to ???? Index</h3>
     <table class="result-table">
       <tr>
         <th></th>
@@ -43,16 +43,16 @@
       </tr>
     </table>
 
-    <h3>Direct Distance Matrix</h3>
-    <table class="result-table">
-      <tr>
-        <th></th>
-        <th *ngFor="let label of vectorLabels"><span [innerHTML]="label"></span></th>
-      </tr>
-      <tr *ngFor="let row of directDistanceMatrix; let i = index">
-        <th><span [innerHTML]="vectorLabels[i]"></span></th>
-        <td *ngFor="let value of row">{{ value.toFixed(3) }}</td>
-      </tr>
-    </table>
+<!--    <h3>Direct Distance Matrix</h3>-->
+<!--    <table class="result-table">-->
+<!--      <tr>-->
+<!--        <th></th>-->
+<!--        <th *ngFor="let label of vectorLabels"><span [innerHTML]="label"></span></th>-->
+<!--      </tr>-->
+<!--      <tr *ngFor="let row of directDistanceMatrix; let i = index">-->
+<!--        <th><span [innerHTML]="vectorLabels[i]"></span></th>-->
+<!--        <td *ngFor="let value of row">{{ value.toFixed(3) }}</td>-->
+<!--      </tr>-->
+<!--    </table>-->
   </div>
 </div>
