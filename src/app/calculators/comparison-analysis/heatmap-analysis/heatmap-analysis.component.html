@@ -1,0 +1,24 @@
+<div class="heatmap-analysis">
+  <h3>Heatmap Analysis</h3>
+  <div *ngIf="heatmapData1.datasets.length">
+    <h4>Heatmap for Distance Matrix</h4>
+    <div style="height: 400px;">
+      <canvas baseChart
+              [data]="heatmapData1"
+              [options]="heatmapOptions"
+              type="bubble">
+      </canvas>
+    </div>
+  </div>
+
+  <div *ngIf="heatmapData2.datasets.length">
+    <h4>Heatmap for Direct Distance Matrix</h4>
+    <div style="height: 400px;">
+      <canvas baseChart
+              [data]="heatmapData2"
+              [options]="heatmapOptions"
+              type="bubble">
+      </canvas>
+    </div>
+  </div>
+</div>

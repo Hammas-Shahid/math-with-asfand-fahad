@@ -1,0 +1,30 @@
+<div class="pca-analysis">
+  <h3>Principal Component Analysis Result</h3>
+  <div *ngIf="pcaResult1.length">
+    <h4>PCA for Distance Matrix</h4>
+    <table class="result-table">
+      <tr>
+        <th>Principal Component 1</th>
+        <th>Principal Component 2</th>
+      </tr>
+      <tr *ngFor="let point of pcaResult1">
+        <td>{{ point[0].toFixed(3) }}</td>
+        <td>{{ point[1].toFixed(3) }}</td>
+      </tr>
+    </table>
+  </div>
+
+  <div *ngIf="pcaResult2.length">
+    <h4>PCA for Direct Distance Matrix</h4>
+    <table class="result-table">
+      <tr>
+        <th>Principal Component 1</th>
+        <th>Principal Component 2</th>
+      </tr>
+      <tr *ngFor="let point of pcaResult2">
+        <td>{{ point[0].toFixed(3) }}</td>
+        <td>{{ point[1].toFixed(3) }}</td>
+      </tr>
+    </table>
+  </div>
+</div>

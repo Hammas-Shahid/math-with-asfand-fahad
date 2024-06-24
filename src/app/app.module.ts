@@ -24,7 +24,7 @@ import { PinDialogComponent } from './pin-dialog/pin-dialog.component';
 import {CalculatorPinGuard} from "./guards/calculator-pin.guard";
 import {AuthService} from "./auth.service";
 import {DashboardComponent} from "./dashboard/dashboard.component";
-import {CalculatorsModule} from "./calculators/calculators.module";
+import { saveAs } from 'file-saver';
 
 @NgModule({
   declarations: [
@@ -52,6 +52,7 @@ import {CalculatorsModule} from "./calculators/calculators.module";
     MatButtonModule,
     MatToolbarModule,
     MatCardModule,
+
   ],
   providers: [CalculatorPinGuard, AuthService],
   bootstrap: [AppComponent]
