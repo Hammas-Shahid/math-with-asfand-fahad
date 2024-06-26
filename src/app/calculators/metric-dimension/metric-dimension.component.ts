@@ -180,14 +180,14 @@ export class MetricDimensionComponent implements OnInit {
     });
     latex += '\\end{itemize}\n';
 
-    latex += '\\subsection*{Minimal Cardinality Sets}\n';
+    latex += '\\subsection*{Minimum Cardinality Sets}\n';
     latex += '\\begin{itemize}\n';
     this.minCardinalitySets.forEach(set => {
       latex += `  \\item ${set.join(', ')}\n`;
     });
     latex += '\\end{itemize}\n';
 
-    latex += '\\subsection*{Minimal Metric Sets}\n';
+    latex += '\\subsection*{Minimal Cardinality Sets}\n';
     latex += '\\begin{itemize}\n';
     this.minimalMetricSets.forEach(set => {
       latex += `  \\item ${set.join(', ')}\n`;
