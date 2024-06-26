@@ -27,7 +27,6 @@ export class MetricDimensionComponent implements OnInit {
         console.log('Received state:', navigatedData);
         navigatedData = this.calculateDistanceMatrixUsingList(navigatedData);
         this.table = navigatedData as any;
-        // this.calculatorsService.metricTableDataSubject.next(null);
         this.n = this.table.length;
         this.generateTable(this.n, true);
       } else {
@@ -58,8 +57,8 @@ export class MetricDimensionComponent implements OnInit {
     }
   }
 
-  findResolvingSets(): void {
-    // if (typeof Worker !== 'undefined') {
+  async findResolvingSets(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
       const worker = new Worker(new URL('../metric-dimension/resolving-sets.worker', import.meta.url));
       worker.onmessage = ({ data }) => {
         this.resolvingSets = data.resolvingSets;
@@ -67,18 +66,15 @@ export class MetricDimensionComponent implements OnInit {
         this.findMinCardinalitySets();
         this.findMinimalMetricSets();
         this.openDialog();
+        resolve();
+      };
+
+      worker.onerror = (error) => {
+        reject(error);
       };
 
       worker.postMessage({ n: this.n, table: this.table });
-    // } else {
-      // Web Workers are not supported in this environment.
-      // You can fallback to running on the main thread if needed.
-      // this.resolvingSets = this.calculateResolvingSets();
-    //   this.sortResolvingSets();
-    //   this.findMinCardinalitySets();
-    //   this.findMinimalMetricSets();
-    //   this.openDialog();
-    // }
+    });
   }
 
   private sortResolvingSets(): void {
@@ -119,7 +115,7 @@ export class MetricDimensionComponent implements OnInit {
 
   protected readonly String = String;
 
-   calculateDistanceMatrixUsingList(adjList: any): number[][] {
+  calculateDistanceMatrixUsingList(adjList: any): number[][] {
     const n = adjList.length;
     const distanceMatrix: number[][] = Array.from({ length: n }, () => Array(n).fill(Infinity));
 
@@ -139,18 +135,15 @@ export class MetricDimensionComponent implements OnInit {
         }
       }
 
-      // Update the distance matrix for the starting node
       for (let i = 0; i < n; i++) {
         distanceMatrix[start][i] = distances[i];
       }
     };
 
-    // Perform BFS from each node
     for (let i = 0; i < n; i++) {
       bfs(i);
     }
 
-    // Replace Infinity with -1 to indicate no path exists if preferred
     for (let i = 0; i < n; i++) {
       for (let j = 0; j < n; j++) {
         if (distanceMatrix[i][j] === Infinity) {
@@ -162,4 +155,47 @@ export class MetricDimensionComponent implements OnInit {
     return distanceMatrix;
   }
 
+  async exportToLatex() {
+    await this.findResolvingSets().then(() => {
+      const latex = this.generateLatex();
+      const blob = new Blob([latex], { type: 'text/plain;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'results.tex';
+      link.click();
+    });
+  }
+
+  private generateLatex(): string {
+    let latex = '\\documentclass{article}\n\\usepackage{amsmath}\n\\begin{document}\n';
+    latex += '\\section*{Metric Dimension Results}\n';
+
+    latex += '\\subsection*{Metric Dimension}\n';
+    latex += `The metric dimension is ${this.metricDimension}.\n`;
+
+    latex += '\\subsection*{Resolving Sets}\n';
+    latex += '\\begin{itemize}\n';
+    this.resolvingSets.forEach(set => {
+      latex += `  \\item ${set.join(', ')}\n`;
+    });
+    latex += '\\end{itemize}\n';
+
+    latex += '\\subsection*{Minimal Cardinality Sets}\n';
+    latex += '\\begin{itemize}\n';
+    this.minCardinalitySets.forEach(set => {
+      latex += `  \\item ${set.join(', ')}\n`;
+    });
+    latex += '\\end{itemize}\n';
+
+    latex += '\\subsection*{Minimal Metric Sets}\n';
+    latex += '\\begin{itemize}\n';
+    this.minimalMetricSets.forEach(set => {
+      latex += `  \\item ${set.join(', ')}\n`;
+    });
+    latex += '\\end{itemize}\n';
+
+    latex += '\\end{document}\n';
+
+    return latex;
+  }
 }
