@@ -25,6 +25,7 @@ export class MetricDimensionComponent implements OnInit {
       navigatedData = value;
       if (navigatedData) {
         console.log('Received state:', navigatedData);
+        navigatedData = this.calculateDistanceMatrixUsingList(navigatedData);
         this.table = navigatedData as any;
         // this.calculatorsService.metricTableDataSubject.next(null);
         this.n = this.table.length;
@@ -58,7 +59,7 @@ export class MetricDimensionComponent implements OnInit {
   }
 
   findResolvingSets(): void {
-    if (typeof Worker !== 'undefined') {
+    // if (typeof Worker !== 'undefined') {
       const worker = new Worker(new URL('../metric-dimension/resolving-sets.worker', import.meta.url));
       worker.onmessage = ({ data }) => {
         this.resolvingSets = data.resolvingSets;
@@ -69,15 +70,15 @@ export class MetricDimensionComponent implements OnInit {
       };
 
       worker.postMessage({ n: this.n, table: this.table });
-    } else {
+    // } else {
       // Web Workers are not supported in this environment.
       // You can fallback to running on the main thread if needed.
       // this.resolvingSets = this.calculateResolvingSets();
-      this.sortResolvingSets();
-      this.findMinCardinalitySets();
-      this.findMinimalMetricSets();
-      this.openDialog();
-    }
+    //   this.sortResolvingSets();
+    //   this.findMinCardinalitySets();
+    //   this.findMinimalMetricSets();
+    //   this.openDialog();
+    // }
   }
 
   private sortResolvingSets(): void {
@@ -117,4 +118,48 @@ export class MetricDimensionComponent implements OnInit {
   }
 
   protected readonly String = String;
+
+   calculateDistanceMatrixUsingList(adjList: any): number[][] {
+    const n = adjList.length;
+    const distanceMatrix: number[][] = Array.from({ length: n }, () => Array(n).fill(Infinity));
+
+    const bfs = (start: number) => {
+      const queue: number[] = [start];
+      const distances: number[] = Array(n).fill(Infinity);
+      distances[start] = 0;
+
+      while (queue.length > 0) {
+        const node = queue.shift()!;
+
+        for (const adjacent of adjList[node]) {
+          if (distances[adjacent] === Infinity) {
+            distances[adjacent] = distances[node] + 1;
+            queue.push(adjacent);
+          }
+        }
+      }
+
+      // Update the distance matrix for the starting node
+      for (let i = 0; i < n; i++) {
+        distanceMatrix[start][i] = distances[i];
+      }
+    };
+
+    // Perform BFS from each node
+    for (let i = 0; i < n; i++) {
+      bfs(i);
+    }
+
+    // Replace Infinity with -1 to indicate no path exists if preferred
+    for (let i = 0; i < n; i++) {
+      for (let j = 0; j < n; j++) {
+        if (distanceMatrix[i][j] === Infinity) {
+          distanceMatrix[i][j] = -1;
+        }
+      }
+    }
+
+    return distanceMatrix;
+  }
+
 }
