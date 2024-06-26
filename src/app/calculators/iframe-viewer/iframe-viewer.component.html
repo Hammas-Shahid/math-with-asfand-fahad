@@ -1,0 +1,8 @@
+<!-- iframe-viewer.component.html -->
+<div class="container">
+  <div class="top-bar">
+    <input type="text" placeholder="Enter Graph ID" [(ngModel)]="graphId">
+    <button (click)="getAdjacencyMatrix()">Load</button>
+  </div>
+  <iframe [src]="iframeUrl" frameborder="0"></iframe>
+</div>

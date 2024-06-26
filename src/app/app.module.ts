@@ -25,13 +25,15 @@ import {CalculatorPinGuard} from "./guards/calculator-pin.guard";
 import {AuthService} from "./auth.service";
 import {DashboardComponent} from "./dashboard/dashboard.component";
 import { saveAs } from 'file-saver';
+import { iframeViewerComponent } from './calculators/iframe-viewer/iframe-viewer.component';
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     PinDialogComponent,
-    DashboardComponent
+    DashboardComponent,
   ],
   imports: [
     BrowserModule,
@@ -52,7 +54,7 @@ import { saveAs } from 'file-saver';
     MatButtonModule,
     MatToolbarModule,
     MatCardModule,
-
+    HttpClientModule
   ],
   providers: [CalculatorPinGuard, AuthService],
   bootstrap: [AppComponent]

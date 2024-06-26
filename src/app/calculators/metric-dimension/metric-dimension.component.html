@@ -1,19 +1,19 @@
 <div style="display: flex">
   <h2 style="padding: 6px">Find Resolving Sets and Metric Dimensions</h2>
   <div style="margin: 6px 0 0 10px;">
-    <mat-form-field appearance="fill">
+    <mat-form-field appearance="fill" >
       <mat-label>Number of dimensions</mat-label>
       <input matInput type="number" placeholder="Enter n" [(ngModel)]="n" aria-label="Number of dimensions">
     </mat-form-field>
-    <button mat-raised-button color="primary" (click)="generateTable()" aria-label="Generate table" style="margin-left: 6px">
+    <button mat-raised-button color="primary" (click)="generateTable(n)" aria-label="Generate table" style="margin-left: 6px">
       Generate Table
     </button>
   </div>
 </div>
 
-<div class="padding-10p">
+<div class="padding-10p" *ngIf="table.length > 0">
   <div class="table-container">
-    <table mat-table [dataSource]="table" class="mat-elevation-z8" *ngIf="table.length > 0">
+    <table mat-table [dataSource]="table" class="mat-elevation-z8">
       <!-- Header Column -->
       <ng-container matColumnDef="header">
         <th mat-header-cell *matHeaderCellDef></th>
@@ -35,6 +35,8 @@
   </div>
 
   <div>
-    <button mat-raised-button color="primary" (click)="findResolvingSets()" aria-label="Find resolving sets" style="padding: 10px" *ngIf="n > 0">Get Results</button>
+    <button mat-raised-button color="primary" (click)="findResolvingSets()" aria-label="Find resolving sets" style="padding: 10px">
+      Get Results
+    </button>
   </div>
 </div>

@@ -1,13 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MetricDimensionDialogComponent } from './metric-dimension-dialog/metric-dimension-dialog.component';
+import { CalculatorsService } from '../calculators.service';
 
 @Component({
   selector: 'app-metric-dimension',
   templateUrl: './metric-dimension.component.html',
   styleUrls: ['./metric-dimension.component.css']
 })
-export class MetricDimensionComponent {
+export class MetricDimensionComponent implements OnInit {
   n: number = 0;
   table: (number | null)[][] = [];
   displayedColumns: string[] = [];
@@ -16,14 +17,35 @@ export class MetricDimensionComponent {
   minimalMetricSets: string[][] = [];
   metricDimension: number = 0;
 
-  constructor(public dialog: MatDialog) {}
+  constructor(public dialog: MatDialog, private calculatorsService: CalculatorsService) {}
 
-  generateTable(): void {
-    this.table = Array.from({ length: this.n }, () => Array.from({ length: this.n }, () => null));
-    this.displayedColumns = ['header', ...Array.from({ length: this.n }, (_, i) => `col${i + 1}`)];
-    for (let i = 0; i < this.n; i++) {
-      this.table[i][i] = 0;
+  ngOnInit(): void {
+    let navigatedData: any = null;
+    this.calculatorsService.metricTableDataSubject.subscribe(value => {
+      navigatedData = value;
+      if (navigatedData) {
+        console.log('Received state:', navigatedData);
+        this.table = navigatedData as any;
+        // this.calculatorsService.metricTableDataSubject.next(null);
+        this.n = this.table.length;
+        this.generateTable(this.n, true);
+      } else {
+        this.table = [];
+        this.displayedColumns = [];
+      }
+    });
+
+    console.log('Table after init:', this.table);
+  }
+
+  generateTable(n: number, fromData: boolean = false): void {
+    if (!fromData) {
+      this.table = Array.from({ length: n }, () => Array.from({ length: n }, () => null));
+      for (let i = 0; i < n; i++) {
+        this.table[i][i] = 0;
+      }
     }
+    this.displayedColumns = ['header', ...Array.from({ length: n }, (_, i) => `col${i + 1}`)];
   }
 
   updateValue(i: number, j: number, event: Event): void {
@@ -36,46 +58,26 @@ export class MetricDimensionComponent {
   }
 
   findResolvingSets(): void {
-    this.resolvingSets = this.calculateResolvingSets();
-    this.sortResolvingSets();
-    this.findMinCardinalitySets();
-    this.findMinimalMetricSets();
-    this.openDialog();
-  }
+    if (typeof Worker !== 'undefined') {
+      const worker = new Worker(new URL('../metric-dimension/resolving-sets.worker', import.meta.url));
+      worker.onmessage = ({ data }) => {
+        this.resolvingSets = data.resolvingSets;
+        this.sortResolvingSets();
+        this.findMinCardinalitySets();
+        this.findMinimalMetricSets();
+        this.openDialog();
+      };
 
-  private calculateResolvingSets(): string[][] {
-    const vertices = Array.from({ length: this.n }, (_, i) => i + 1);
-    const allSubsets = this.getAllSubsets(vertices);
-    const resolvingSets: string[][] = [];
-
-    for (const subset of allSubsets) {
-      if (this.isResolvingSet(subset)) {
-        resolvingSets.push(subset.map(v => `v${v}`).sort());
-      }
+      worker.postMessage({ n: this.n, table: this.table });
+    } else {
+      // Web Workers are not supported in this environment.
+      // You can fallback to running on the main thread if needed.
+      // this.resolvingSets = this.calculateResolvingSets();
+      this.sortResolvingSets();
+      this.findMinCardinalitySets();
+      this.findMinimalMetricSets();
+      this.openDialog();
     }
-
-    return resolvingSets;
-  }
-
-  private getAllSubsets(arr: number[]): number[][] {
-    return arr.reduce<number[][]>(
-      (subsets, value) => subsets.concat(subsets.map(set => [value, ...set])),
-      [[]]
-    );
-  }
-
-  private isResolvingSet(subset: number[]): boolean {
-    const distances = new Set<string>();
-
-    for (let i = 0; i < this.n; i++) {
-      const distanceVector = subset.map(j => this.table[i][j - 1]).join(',');
-      if (distances.has(distanceVector)) {
-        return false;
-      }
-      distances.add(distanceVector);
-    }
-
-    return true;
   }
 
   private sortResolvingSets(): void {
