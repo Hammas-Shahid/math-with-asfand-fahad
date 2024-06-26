@@ -9,7 +9,7 @@ import {ComparisonAnalysisComponent} from "./comparison-analysis/comparison-anal
 import {iframeViewerComponent} from "./iframe-viewer/iframe-viewer.component";
 
 const routes: Routes = [
-  { path: 'metric-dimension', component: MetricDimensionComponent },
+  { path: 'metric-dimension', component: MetricDimensionComponent, canActivate: [CalculatorPinGuard] },
   { path: 'vector-calculator', component: VectorCalculatorComponent, canActivate: [CalculatorPinGuard] },
   { path: 'information-system', component: InformationSystemComponent, canActivate: [CalculatorPinGuard] },
   { path: 'direct-distance', component: DirectDistanceComponent, canActivate: [CalculatorPinGuard] },
