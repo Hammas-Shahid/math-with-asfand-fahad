@@ -14,7 +14,6 @@ import {CalculatorsService} from "../calculators.service";
 export class iframeViewerComponent {
 
   constructor(public sanitizer: DomSanitizer, private http: HttpClient, private router: Router, private calculatorsService: CalculatorsService) {
-    console.log('Hello World');
     const url = 'https://houseofgraphs.org/result-graphs'; // Replace with the actual URL of your web app
     this.iframeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }

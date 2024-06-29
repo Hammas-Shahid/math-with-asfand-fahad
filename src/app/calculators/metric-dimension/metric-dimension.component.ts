@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MetricDimensionDialogComponent } from './metric-dimension-dialog/metric-dimension-dialog.component';
-import { CalculatorsService } from '../calculators.service';
+import {Component, OnInit} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import {MetricDimensionDialogComponent} from './metric-dimension-dialog/metric-dimension-dialog.component';
+import {CalculatorsService} from '../calculators.service';
 
 @Component({
   selector: 'app-metric-dimension',
@@ -17,7 +17,8 @@ export class MetricDimensionComponent implements OnInit {
   minimalMetricSets: string[][] = [];
   metricDimension: number = 0;
 
-  constructor(public dialog: MatDialog, private calculatorsService: CalculatorsService) {}
+  constructor(public dialog: MatDialog, private calculatorsService: CalculatorsService) {
+  }
 
   ngOnInit(): void {
     let navigatedData: any = null;
@@ -40,12 +41,12 @@ export class MetricDimensionComponent implements OnInit {
 
   generateTable(n: number, fromData: boolean = false): void {
     if (!fromData) {
-      this.table = Array.from({ length: n }, () => Array.from({ length: n }, () => null));
+      this.table = Array.from({length: n}, () => Array.from({length: n}, () => null));
       for (let i = 0; i < n; i++) {
         this.table[i][i] = 0;
       }
     }
-    this.displayedColumns = ['header', ...Array.from({ length: n }, (_, i) => `col${i + 1}`)];
+    this.displayedColumns = ['header', ...Array.from({length: n}, (_, i) => `col${i + 1}`)];
   }
 
   updateValue(i: number, j: number, event: Event): void {
@@ -60,7 +61,7 @@ export class MetricDimensionComponent implements OnInit {
   async findResolvingSets(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       const worker = new Worker(new URL('../metric-dimension/resolving-sets.worker', import.meta.url));
-      worker.onmessage = ({ data }) => {
+      worker.onmessage = ({data}) => {
         this.resolvingSets = data.resolvingSets;
         this.sortResolvingSets();
         this.findMinCardinalitySets();
@@ -73,7 +74,7 @@ export class MetricDimensionComponent implements OnInit {
         reject(error);
       };
 
-      worker.postMessage({ n: this.n, table: this.table });
+      worker.postMessage({n: this.n, table: this.table});
     });
   }
 
@@ -117,7 +118,7 @@ export class MetricDimensionComponent implements OnInit {
 
   calculateDistanceMatrixUsingList(adjList: any): number[][] {
     const n = adjList.length;
-    const distanceMatrix: number[][] = Array.from({ length: n }, () => Array(n).fill(Infinity));
+    const distanceMatrix: number[][] = Array.from({length: n}, () => Array(n).fill(Infinity));
 
     const bfs = (start: number) => {
       const queue: number[] = [start];
@@ -158,11 +159,18 @@ export class MetricDimensionComponent implements OnInit {
   async exportToLatex() {
     await this.findResolvingSets().then(() => {
       const latex = this.generateLatex();
-      const blob = new Blob([latex], { type: 'text/plain;charset=utf-8' });
+      const blob = new Blob([latex], {type: 'text/plain;charset=utf-8'});
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
       link.download = 'results.tex';
       link.click();
+    });
+  }
+
+  async exportToPDF() {
+    await this.findResolvingSets().then(() => {
+      const url = `https://latexonline.cc/compile?text=${encodeURIComponent(this.generateLatex())}`;
+      window.open(url, '_blank');
     });
   }
 

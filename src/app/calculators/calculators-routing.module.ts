@@ -13,7 +13,7 @@ const routes: Routes = [
   { path: 'vector-calculator', component: VectorCalculatorComponent, canActivate: [CalculatorPinGuard] },
   { path: 'information-system', component: InformationSystemComponent, canActivate: [CalculatorPinGuard] },
   { path: 'direct-distance', component: DirectDistanceComponent, canActivate: [CalculatorPinGuard] },
-  { path: 'comparison-analysis', component: ComparisonAnalysisComponent },
+  { path: 'comparison-analysis', component: ComparisonAnalysisComponent, canActivate: [CalculatorPinGuard] },
   { path: 'iframe', component: iframeViewerComponent }
 ];
 
