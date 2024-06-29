@@ -2,7 +2,8 @@
   <h2>Enter Adjacency List of Graph</h2>
   <textarea [(ngModel)]="adjacencyList" placeholder="Enter adjacency list here..."></textarea>
   <br>
-  <button (click)="generateGraph6()">Generate Graph6 File</button>
-  <pre>{{ graph6 }}</pre>
-  <button (click)="downloadGraph6()" *ngIf="graph6">Download Graph6 File</button>
+  <button (click)="generateAdjacencyMatrix()">Generate Adjacency Matrix</button>
+  <pre>{{ adjacencyMatrixString }}</pre>
+  <button (click)="downloadMatFile()" *ngIf="adjacencyMatrixString">Download .mat File</button>
+  <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
 </div>

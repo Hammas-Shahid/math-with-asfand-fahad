@@ -7,59 +7,78 @@ import { Component } from '@angular/core';
 })
 export class AdjacencyListInputComponent {
   adjacencyList: string = '';
-  graph6: string = '';
+  adjacencyMatrixString: string = '';
+  adjacencyMatrix: number[][] = [];
+  errorMessage: string = '';
 
-  generateGraph6(): void {
-    const edges: [number, number][] = [];
+  generateAdjacencyMatrix(): void {
+    try {
+      const edges: [number, number][] = [];
+      const lines = this.adjacencyList.split('\n').filter(line => line.trim());
+      const uniqueNodes = new Set<number>();
 
-    const lines = this.adjacencyList.split('\n').filter(line => line.trim());
-    lines.forEach(line => {
-      const [node, connections] = line.split(':');
-      const nodeIndex = parseInt(node.trim(), 10) - 1; // Convert to 0-based index
-      const connectedNodes = connections.trim().split(' ').map(n => parseInt(n.trim(), 10) - 1); // Convert to 0-based index
-      connectedNodes.forEach(connection => {
-        if (!edges.some(([a, b]) => (a === nodeIndex && b === connection) || (a === connection && b === nodeIndex))) {
-          edges.push([nodeIndex, connection]);
+      lines.forEach(line => {
+        const parts = line.split(':');
+        if (parts.length !== 2) {
+          throw new Error(`Invalid format in line: "${line}". Expected format: "node: neighbors"`);
+        }
+        const [node, connections] = parts;
+        const nodeIndex = parseInt(node.trim(), 10) - 1; // Convert to 0-based index
+        if (isNaN(nodeIndex) || nodeIndex < 0) {
+          throw new Error(`Invalid node number in line: "${line}"`);
+        }
+        const connectedNodes = connections.trim().split(' ').map(n => {
+          const idx = parseInt(n.trim(), 10) - 1; // Convert to 0-based index
+          if (isNaN(idx) || idx < 0) {
+            throw new Error(`Invalid connection number in line: "${line}"`);
+          }
+          return idx;
+        });
+
+        connectedNodes.forEach(connection => {
+          if (!edges.some(([a, b]) => (a === nodeIndex && b === connection) || (a === connection && b === nodeIndex))) {
+            edges.push([nodeIndex, connection]);
+          }
+          uniqueNodes.add(nodeIndex);
+          uniqueNodes.add(connection);
+        });
+      });
+
+      const nodeArray = Array.from(uniqueNodes).sort((a, b) => a - b);
+      const nodeMap = new Map<number, number>();
+      nodeArray.forEach((node, index) => nodeMap.set(node, index));
+      const n = nodeArray.length;
+
+      this.adjacencyMatrix = Array.from({ length: n }, () => Array(n).fill(0));
+      edges.forEach(([from, to]) => {
+        const i = nodeMap.get(from);
+        const j = nodeMap.get(to);
+        if (i !== undefined && j !== undefined) {
+          this.adjacencyMatrix[i][j] = 1;
+          this.adjacencyMatrix[j][i] = 1; // Undirected graph
         }
       });
-    });
 
-    const n = Math.max(...edges.flat()) + 1;
-    const adjMatrix = Array.from({ length: n }, () => Array(n).fill(0));
-    edges.forEach(([from, to]) => {
-      adjMatrix[from][to] = 1;
-      adjMatrix[to][from] = 1; // Undirected graph
-    });
+      console.log('Edges:', edges);
+      console.log('Adjacency Matrix:', this.adjacencyMatrix);
 
-    this.graph6 = this.adjMatrixToGraph6(adjMatrix);
-  }
-
-  adjMatrixToGraph6(matrix: number[][]): string {
-    const n = matrix.length;
-    const bits = [];
-    for (let i = 0; i < n; i++) {
-      for (let j = i + 1; j < n; j++) {
-        bits.push(matrix[i][j]);
-      }
+      this.adjacencyMatrixString = this.matrixToString(this.adjacencyMatrix);
+      this.errorMessage = '';
+    } catch (error) {
+      this.errorMessage = error.message;
     }
-
-    const bitString = bits.join('');
-    const chunkedBits = bitString.match(/.{1,6}/g) || [];
-
-    const chars = chunkedBits.map(chunk => {
-      const value = parseInt(chunk.padEnd(6, '0'), 2);
-      return String.fromCharCode(value + 63);
-    });
-
-    return `${n > 62 ? `>` : ''}${n > 62 ? n.toString() : String.fromCharCode(n + 63)}${chars.join('')}`;
   }
 
-  downloadGraph6(): void {
-    const blob = new Blob([this.graph6], { type: 'text/plain;charset=utf-8' });
+  matrixToString(matrix: number[][]): string {
+    return matrix.map(row => row.join(' ')).join('\n');
+  }
+
+  downloadMatFile(): void {
+    const blob = new Blob([this.adjacencyMatrixString], { type: 'text/plain;charset=utf-8' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'graph.g6';
+    a.download = 'adjacency_matrix.mat';
     a.click();
     window.URL.revokeObjectURL(url);
   }
