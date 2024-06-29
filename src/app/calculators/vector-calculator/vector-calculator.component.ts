@@ -15,6 +15,7 @@ export class VectorCalculatorComponent {
   vectorLabels: string[] = [];
   vectorLabelsForExport: string[] = [];
   resultsVisible = false;
+  propertyName = '';
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
@@ -34,7 +35,7 @@ export class VectorCalculatorComponent {
 
     this.vectors = varValues.map((varValue: any) => this.vectorFunction(varValue, varValues));
     this.distanceMatrix = this.calculateDistanceMatrix(this.vectors);
-    this.directDistanceMatrix = this.calculateDirectDistanceMatrix(varValues);
+    // this.directDistanceMatrix = this.calculateDirectDistanceMatrix(varValues);
     this.vectorLabels = this.vectors.map((_, index) => `v<sub>${index + 1}</sub>`);
     this.vectorLabelsForExport = this.vectors.map((_, index) => `v_{${index + 1}}`);
     this.resultsVisible = true;
@@ -70,28 +71,23 @@ export class VectorCalculatorComponent {
   exportToLaTeX() {
     const vectorsLatex = this.arrayToLatex(this.vectors, this.vectorLabelsForExport);
     const distanceMatrixLatex = this.arrayToLatex(this.distanceMatrix, this.vectorLabelsForExport, this.vectorLabelsForExport);
-    const directDistanceMatrixLatex = this.arrayToLatex(this.directDistanceMatrix, this.vectorLabelsForExport, this.vectorLabelsForExport);
+    // const directDistanceMatrixLatex = this.arrayToLatex(this.directDistanceMatrix, this.vectorLabelsForExport, this.vectorLabelsForExport);
 
     const latexContent = `
       \\documentclass{article}
       \\usepackage{amsmath}
       \\begin{document}
-      Feature Vector Corresponding to ???? Index:\\\\[5pt]
+      Feature Vector Corresponding to ${this.propertyName || '????'} Index:\\\\[5pt]
       \\[
       ${vectorsLatex}
       \\]
       \\\\[10pt]
-      Distance Matrix For Feature Vectors Corresponding to ???? Index:\\\\[5pt]
+      Distance Matrix For Feature Vectors Corresponding to ${this.propertyName || '????'} Index:\\\\[5pt]
       \\[
       ${distanceMatrixLatex}
       \\]
-      \\\\[10pt]
       \\end{document}
     `;
-  //   Direct Distance Matrix:\\\\[5pt]
-  //     \\[
-  //   ${directDistanceMatrixLatex}
-  // \\]
     const blob = new Blob([latexContent], { type: 'text/plain' });
     saveAs(blob, 'vectors.tex');
   }
@@ -99,25 +95,20 @@ export class VectorCalculatorComponent {
   exportToPDF() {
     const vectorsLatex = this.arrayToLatex(this.vectors, this.vectorLabelsForExport);
     const distanceMatrixLatex = this.arrayToLatex(this.distanceMatrix, this.vectorLabelsForExport, this.vectorLabelsForExport);
-    const directDistanceMatrixLatex = this.arrayToLatex(this.directDistanceMatrix, this.vectorLabelsForExport, this.vectorLabelsForExport);
+    // const directDistanceMatrixLatex = this.arrayToLatex(this.directDistanceMatrix, this.vectorLabelsForExport, this.vectorLabelsForExport);
 
     const latexContent = `
       \\documentclass{article}
       \\usepackage{amsmath}
       \\begin{document}
-      Vectors:\\\\[5pt]
+      Feature Vector Corresponding to ${this.propertyName || '????'} Index:\\\\[5pt]
       \\[
       ${vectorsLatex}
       \\]
       \\\\[10pt]
-      Distance Matrix (Vectors):\\\\[5pt]
+      Distance Matrix For Feature Vectors Corresponding to ${this.propertyName || '????'} Index:\\\\[5pt]
       \\[
       ${distanceMatrixLatex}
-      \\]
-      \\\\[10pt]
-      Direct Distance Matrix:\\\\[5pt]
-      \\[
-      ${directDistanceMatrixLatex}
       \\]
       \\end{document}
     `;

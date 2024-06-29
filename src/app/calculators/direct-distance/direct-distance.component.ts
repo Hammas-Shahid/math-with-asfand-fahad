@@ -13,6 +13,7 @@ export class DirectDistanceComponent {
   vectorLabels: string[] = [];
   vectorLabelsForExport: string[] = [];
   resultsVisible = false;
+  propertyName = ''
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
@@ -51,7 +52,7 @@ export class DirectDistanceComponent {
       \\documentclass{article}
       \\usepackage{amsmath}
       \\begin{document}
-      Distance Matrix for ????:\\\\[5pt]
+      Distance Matrix for ${this.propertyName || '????'}:\\\\[5pt]
       \\[
       ${directDistanceMatrixLatex}
       \\]
@@ -69,7 +70,7 @@ export class DirectDistanceComponent {
       \\documentclass{article}
       \\usepackage{amsmath}
       \\begin{document}
-      Direct Distance Matrix:\\\\[5pt]
+      Distance Matrix for ${this.propertyName || '????'}:\\\\[5pt]
       \\[
       ${directDistanceMatrixLatex}
       \\]

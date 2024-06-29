@@ -29,3 +29,13 @@
 button {
   margin-top: 16px;
 }
+
+.propertyName {
+  font-weight: 600;
+  font-size: 18.72px;
+  border-bottom: 1px solid;
+  border-left: unset;
+  border-right: unset;
+  border-top: unset;
+  width: 100px;
+}
