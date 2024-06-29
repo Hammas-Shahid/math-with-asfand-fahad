@@ -30,6 +30,7 @@ import { HeatmapAnalysisComponent } from './comparison-analysis/heatmap-analysis
 import {BaseChartDirective, provideCharts, withDefaultRegisterables} from "ng2-charts";
 import { Chart, registerables } from 'chart.js';
 import {iframeViewerComponent} from "./iframe-viewer/iframe-viewer.component";
+import { AdjacencyListInputComponent } from './adjacency-list-input/adjacency-list-input.component';
 
 Chart.register(...registerables);
 
@@ -48,7 +49,8 @@ Chart.register(...registerables);
     MdsAnalysisComponent,
     PcaAnalysisComponent,
     HeatmapAnalysisComponent,
-    iframeViewerComponent
+    iframeViewerComponent,
+    AdjacencyListInputComponent
   ],
   imports: [
     CommonModule,

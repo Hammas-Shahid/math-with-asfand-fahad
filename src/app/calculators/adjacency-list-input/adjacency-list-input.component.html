@@ -1,0 +1,8 @@
+<div class="container">
+  <h2>Enter Adjacency List of Graph</h2>
+  <textarea [(ngModel)]="adjacencyList" rows="10" cols="50"></textarea>
+  <br>
+  <button (click)="generateGraph6()">Generate Graph6 File</button>
+  <pre>{{ graph6 }}</pre>
+  <button (click)="downloadGraph6()" *ngIf="graph6">Download Graph6 File</button>
+</div>
