@@ -15,8 +15,8 @@ export class AdjacencyListInputComponent {
     const lines = this.adjacencyList.split('\n').filter(line => line.trim());
     lines.forEach(line => {
       const [node, connections] = line.split(':');
-      const nodeIndex = parseInt(node.trim(), 10);
-      const connectedNodes = connections.trim().split(' ').map(n => parseInt(n.trim(), 10));
+      const nodeIndex = parseInt(node.trim(), 10) - 1; // Convert to 0-based index
+      const connectedNodes = connections.trim().split(' ').map(n => parseInt(n.trim(), 10) - 1); // Convert to 0-based index
       connectedNodes.forEach(connection => {
         if (!edges.some(([a, b]) => (a === nodeIndex && b === connection) || (a === connection && b === nodeIndex))) {
           edges.push([nodeIndex, connection]);
@@ -24,19 +24,11 @@ export class AdjacencyListInputComponent {
       });
     });
 
-    const uniqueNodes = Array.from(new Set(edges.flat()));
-    const n = uniqueNodes.length;
-    const nodeMap = new Map<number, number>();
-    uniqueNodes.sort((a, b) => a - b).forEach((node, index) => nodeMap.set(node, index));
-
+    const n = Math.max(...edges.flat()) + 1;
     const adjMatrix = Array.from({ length: n }, () => Array(n).fill(0));
     edges.forEach(([from, to]) => {
-      const i = nodeMap.get(from);
-      const j = nodeMap.get(to);
-      if (i !== undefined && j !== undefined) {
-        adjMatrix[i][j] = 1;
-        adjMatrix[j][i] = 1; // Undirected graph
-      }
+      adjMatrix[from][to] = 1;
+      adjMatrix[to][from] = 1; // Undirected graph
     });
 
     this.graph6 = this.adjMatrixToGraph6(adjMatrix);
