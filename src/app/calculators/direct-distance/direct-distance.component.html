@@ -15,7 +15,7 @@
   </form>
 
   <div class="results" *ngIf="resultsVisible">
-    <h3>Distance Matrix for ????</h3>
+    <h3>Distance Matrix for <input [(ngModel)]="propertyName" class="propertyName" type="text" placeholder="????"></h3>
     <table class="result-table">
       <tr>
         <th></th>
