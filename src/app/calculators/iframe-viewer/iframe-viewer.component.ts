@@ -22,10 +22,9 @@ export class iframeViewerComponent {
 
   getAdjacencyMatrix() {
     return this.http.get(`https://houseofgraphs.org/api/graphs/${this.graphId}`).subscribe((res: any) => {
-      const data = res.adjacencyList
+      const data = {adjacencyList: res.adjacencyList, adjacencyMatrix: res.adjacencyMatrix}
       console.log(data)
       this.calculatorsService.metricTableDataSubject.next(data)
-      this.calculatorsService.metricTableDataSubject.subscribe(value => console.log(value));
 
       this.navigate()
     })

@@ -24,23 +24,33 @@ export class MetricDimensionComponent implements OnInit {
   ngOnInit(): void {
     let navigatedData: any = null;
     this.calculatorsService.metricTableDataSubject.subscribe(value => {
-      navigatedData = value;
+      navigatedData = value.adjacencyList;
       if (navigatedData) {
         console.log('Received state:', navigatedData);
         navigatedData = this.calculateDistanceMatrixUsingList(navigatedData);
         this.table = navigatedData as any;
         this.n = this.table.length;
         this.generateTable(this.n, true);
+        this.adjacencyMatrixInformation = value.adjacencyMatrix.map((vertex: boolean[])=> {
+          let count = 0;
+          vertex.forEach(e=> {
+            if (e) count++
+          })
+          return count
+        })
+        console.log(this.adjacencyMatrixInformation)
       } else {
         this.table = [];
         this.displayedColumns = [];
       }
     });
 
+
     console.log('Table after init:', this.table);
   }
+  adjacencyMatrixInformation = [];
 
-  generateTable(n: number, fromData: boolean = false): void {
+    generateTable(n: number, fromData: boolean = false): void {
     if (!fromData) {
       this.table = Array.from({length: n}, () => Array.from({length: n}, () => null));
       for (let i = 0; i < n; i++) {
@@ -228,4 +238,27 @@ export class MetricDimensionComponent implements OnInit {
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
     XLSX.writeFile(wb, 'table.xlsx');
   }
-}
+
+  exportGraphParamsToExcel(): void {
+    // Example data array
+    const data: number[] = this.adjacencyMatrixInformation; // Replace this with your actual data array
+
+    // Create the data array in the desired format
+    const dataArray: (string | number)[][] = data.map((value, index) => [`v${index + 1}`, value]);
+
+    // Create the header row
+    const headers: string[] = ['Vertex', 'Degree'];
+
+    // Add the header to the data array
+    dataArray.unshift(headers);
+
+    // Create the worksheet and workbook
+    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(dataArray);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+
+    // Append the worksheet to the workbook
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+    // Write the workbook to a file
+    XLSX.writeFile(wb, 'graph-parameters.xlsx');
+  }}

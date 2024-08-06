@@ -47,5 +47,8 @@
     <button *ngIf="isTableFullyFilled()" mat-raised-button color="accent" (click)="exportToExcel()" aria-label="Export to Excel" style="margin-left: 10px; padding: 10px">
       Export to Excel
     </button>
+    <button *ngIf="isTableFullyFilled()" mat-raised-button color="accent" (click)="exportGraphParamsToExcel()" style="margin-left: 10px; padding: 10px">
+      Export Graph Parameters
+    </button>
   </div>
 </div>
