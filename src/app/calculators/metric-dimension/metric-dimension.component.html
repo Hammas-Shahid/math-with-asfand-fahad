@@ -44,5 +44,8 @@
     <button mat-raised-button color="accent" (click)="exportToPDF()" aria-label="Export to PDF" style="margin-left: 10px; padding: 10px">
       Export to PDF
     </button>
+    <button *ngIf="isTableFullyFilled()" mat-raised-button color="accent" (click)="exportToExcel()" aria-label="Export to Excel" style="margin-left: 10px; padding: 10px">
+      Export to Excel
+    </button>
   </div>
 </div>

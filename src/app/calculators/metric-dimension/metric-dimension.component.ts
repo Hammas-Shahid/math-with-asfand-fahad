@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
+import * as XLSX from 'xlsx';
 import {MetricDimensionDialogComponent} from './metric-dimension-dialog/metric-dimension-dialog.component';
 import {CalculatorsService} from '../calculators.service';
 
@@ -59,13 +60,16 @@ export class MetricDimensionComponent implements OnInit {
   }
 
   async findResolvingSets(): Promise<void> {
+    const startTime = new Date()
     return new Promise<void>((resolve, reject) => {
       const worker = new Worker(new URL('../metric-dimension/resolving-sets.worker', import.meta.url));
       worker.onmessage = ({data}) => {
         this.resolvingSets = data.resolvingSets;
+        console.log(this.resolvingSets);
         this.sortResolvingSets();
         this.findMinCardinalitySets();
         this.findMinimalMetricSets();
+        console.log('Start Time: ', startTime, 'End Time: ', new Date())
         this.openDialog();
         resolve();
       };
@@ -205,5 +209,23 @@ export class MetricDimensionComponent implements OnInit {
     latex += '\\end{document}\n';
 
     return latex;
+  }
+
+  isTableFullyFilled(): boolean {
+    for (let i = 0; i < this.n; i++) {
+      for (let j = 0; j < this.n; j++) {
+        if (this.table[i][j] === null) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  exportToExcel(): void {
+    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(this.table);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, 'table.xlsx');
   }
 }
