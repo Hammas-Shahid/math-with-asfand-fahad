@@ -76,10 +76,14 @@ export class MetricDimensionComponent implements OnInit {
       worker.onmessage = ({data}) => {
         this.resolvingSets = data.resolvingSets;
         console.log(this.resolvingSets);
-        this.sortResolvingSets();
-        this.findMinCardinalitySets();
-        this.findMinimalMetricSets();
-        console.log('Start Time: ', startTime, 'End Time: ', new Date())
+        // this.sortResolvingSets();
+        this.metricDimension = data.metricDimension;
+        console.log('Start Min Card: ', new Date())
+        // this.findMinCardinalitySets();
+        console.log('End Minimum Card: ', new Date())
+        // console.log('Start Minimal Card: ', new Date())
+        // this.findMinimalMetricSets();
+        // console.log('End Minimal Card: ', new Date())
         this.openDialog();
         resolve();
       };
@@ -103,9 +107,10 @@ export class MetricDimensionComponent implements OnInit {
       return;
     }
 
-    const minCardinality = this.resolvingSets[0].length;
+    // const minCardinality = this.resolvingSets[0].length;
+    const minCardinality = this.metricDimension;
     this.minCardinalitySets = this.resolvingSets.filter(set => set.length === minCardinality);
-    this.metricDimension = minCardinality;
+    // this.metricDimension = minCardinality;
   }
 
   private findMinimalMetricSets(): void {
@@ -120,10 +125,10 @@ export class MetricDimensionComponent implements OnInit {
     this.dialog.open(MetricDimensionDialogComponent, {
       width: '600px',
       data: {
-        resolvingSets: this.resolvingSets,
-        minCardinalitySets: this.minCardinalitySets,
+        resolvingSets: [[]],
+        minCardinalitySets: [[]],
         metricDimension: this.metricDimension,
-        minimalMetricSets: this.minimalMetricSets
+        minimalMetricSets: [[]]
       }
     });
   }
