@@ -5,12 +5,14 @@
       <mat-label>Enter variables for Distance Matrix (comma-separated)</mat-label>
       <input matInput formControlName="vars1" type="text" placeholder="e.g., 1, 2, 3, 4">
     </mat-form-field>
+    <mat-checkbox [checked]="processVars1" (change)="processVars1 = $event.checked">Process for Distance Matrix</mat-checkbox>
   </form>
   <form [formGroup]="form2">
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Enter variables for Direct Distance Matrix (comma-separated)</mat-label>
       <input matInput formControlName="vars2" type="text" placeholder="e.g., 4, 3, 2, 1">
     </mat-form-field>
+    <mat-checkbox [checked]="processVars2" (change)="processVars2 = $event.checked">Process for Direct Distance Matrix</mat-checkbox>
     <button mat-raised-button color="primary" (click)="calculateDataAndDistances()">Calculate</button>
   </form>
 

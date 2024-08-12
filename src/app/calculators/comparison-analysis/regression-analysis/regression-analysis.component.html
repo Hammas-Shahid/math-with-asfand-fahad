@@ -3,5 +3,8 @@
   <div *ngIf="regressionResult">
     <p>Slope: {{ regressionResult.slope.toFixed(3) }}</p>
     <p>Intercept: {{ regressionResult.intercept.toFixed(3) }}</p>
+    <p>R: {{ regressionResult.r.toFixed(3) }}</p>
+    <p>R Squared: {{ regressionResult.rSquared.toFixed(3) }}</p>
+    <p>P Value: {{ regressionResult.pValue.toFixed(3) }}</p>
   </div>
 </div>

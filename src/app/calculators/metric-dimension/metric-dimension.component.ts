@@ -26,7 +26,7 @@ export class MetricDimensionComponent implements OnInit {
     this.calculatorsService.metricTableDataSubject.subscribe(value => {
       navigatedData = value.adjacencyList;
       if (navigatedData) {
-        console.log('Received state:', navigatedData);
+        // console.log('Received state:', navigatedData);
         navigatedData = this.calculateDistanceMatrixUsingList(navigatedData);
         this.table = navigatedData as any;
         this.n = this.table.length;
@@ -38,7 +38,7 @@ export class MetricDimensionComponent implements OnInit {
           })
           return count
         })
-        console.log(this.adjacencyMatrixInformation)
+        // console.log(this.adjacencyMatrixInformation)
       } else {
         this.table = [];
         this.displayedColumns = [];
@@ -46,11 +46,11 @@ export class MetricDimensionComponent implements OnInit {
     });
 
 
-    console.log('Table after init:', this.table);
+    // console.log('Table after init:', this.table);
   }
   adjacencyMatrixInformation = [];
 
-    generateTable(n: number, fromData: boolean = false): void {
+  generateTable(n: number, fromData: boolean = false): void {
     if (!fromData) {
       this.table = Array.from({length: n}, () => Array.from({length: n}, () => null));
       for (let i = 0; i < n; i++) {
@@ -75,11 +75,15 @@ export class MetricDimensionComponent implements OnInit {
       const worker = new Worker(new URL('../metric-dimension/resolving-sets.worker', import.meta.url));
       worker.onmessage = ({data}) => {
         this.resolvingSets = data.resolvingSets;
-        console.log(this.resolvingSets);
-        this.sortResolvingSets();
-        this.findMinCardinalitySets();
-        this.findMinimalMetricSets();
-        console.log('Start Time: ', startTime, 'End Time: ', new Date())
+        // console.log(this.resolvingSets);
+        // this.sortResolvingSets();
+        this.metricDimension = data.metricDimension;
+        // console.log('Start Min Card: ', new Date())
+        // this.findMinCardinalitySets();
+        // console.log('End Minimum Card: ', new Date())
+        // console.log('Start Minimal Card: ', new Date())
+        // this.findMinimalMetricSets();
+        // console.log('End Minimal Card: ', new Date())
         this.openDialog();
         resolve();
       };
@@ -103,9 +107,10 @@ export class MetricDimensionComponent implements OnInit {
       return;
     }
 
-    const minCardinality = this.resolvingSets[0].length;
+    // const minCardinality = this.resolvingSets[0].length;
+    const minCardinality = this.metricDimension;
     this.minCardinalitySets = this.resolvingSets.filter(set => set.length === minCardinality);
-    this.metricDimension = minCardinality;
+    // this.metricDimension = minCardinality;
   }
 
   private findMinimalMetricSets(): void {
@@ -117,13 +122,14 @@ export class MetricDimensionComponent implements OnInit {
   }
 
   openDialog(): void {
+    // console.log(this.resolvingSets)
     this.dialog.open(MetricDimensionDialogComponent, {
       width: '600px',
       data: {
-        resolvingSets: this.resolvingSets,
-        minCardinalitySets: this.minCardinalitySets,
+        resolvingSets: [[]],
+        minCardinalitySets: [[]],
         metricDimension: this.metricDimension,
-        minimalMetricSets: this.minimalMetricSets
+        minimalMetricSets: this.resolvingSets
       }
     });
   }

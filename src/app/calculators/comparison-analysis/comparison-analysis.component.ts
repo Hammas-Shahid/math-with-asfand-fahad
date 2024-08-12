@@ -9,11 +9,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class ComparisonAnalysisComponent {
   form1: FormGroup;
   form2: FormGroup;
-  vectors: number[][] = [];
   distanceMatrix: number[][] = [];
   directDistanceMatrix: number[][] = [];
-  vectorLabels: string[] = [];
   resultsVisible = false;
+  processVars1 = true;
+  processVars2 = true;
 
   constructor(private fb: FormBuilder) {
     this.form1 = this.fb.group({
@@ -32,15 +32,22 @@ export class ComparisonAnalysisComponent {
       return;
     }
 
-    this.vectors = varValues1.map((varValue: any) => this.vectorFunction(varValue, varValues1));
-    this.distanceMatrix = this.calculateDistanceMatrix(this.vectors);
-    this.directDistanceMatrix = this.calculateDirectDistanceMatrix(varValues2);
-    this.vectorLabels = this.vectors.map((_, index) => `v<sub>${index + 1}</sub>`);
+    if (this.processVars1) {
+      this.distanceMatrix = this.calculateDistanceMatrix(varValues1.map((varValue: any) => this.vectorFunction(varValue, varValues1)));
+    } else {
+      this.distanceMatrix = [varValues1];
+    }
+
+    if (this.processVars2) {
+      this.directDistanceMatrix = this.calculateDirectDistanceMatrix(varValues2);
+    } else {
+      this.directDistanceMatrix = [varValues2];
+    }
+
     this.resultsVisible = true;
   }
 
   resetResults() {
-    this.vectors = [];
     this.distanceMatrix = [];
     this.directDistanceMatrix = [];
     this.resultsVisible = false;

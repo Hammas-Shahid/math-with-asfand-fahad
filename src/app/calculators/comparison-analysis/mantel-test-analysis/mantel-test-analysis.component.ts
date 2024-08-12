@@ -32,10 +32,7 @@ export class MantelTestAnalysisComponent {
   }
 
   performMantelTest() {
-    console.log('before')
     if (this._distanceMatrix.length && this._directDistanceMatrix.length) {
-      console.log('after')
-
       const x = this._distanceMatrix.flat();
       const y = this._directDistanceMatrix.flat();
 

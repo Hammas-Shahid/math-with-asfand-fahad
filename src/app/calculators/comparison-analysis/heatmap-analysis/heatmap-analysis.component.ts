@@ -16,8 +16,8 @@ export class HeatmapAnalysisComponent implements OnChanges {
     responsive: true,
     maintainAspectRatio: false,
     scales: {
-      x: {},  // Removed beginAtZero
-      y: {}   // Removed beginAtZero
+      x: {},
+      y: {}
     }
   };
 
@@ -26,14 +26,8 @@ export class HeatmapAnalysisComponent implements OnChanges {
   }
 
   generateHeatmapData() {
-    console.log('Distance Matrix:', this.distanceMatrix);
-    console.log('Direct Distance Matrix:', this.directDistanceMatrix);
-
     this.heatmapData1 = this.formatHeatmapData(this.distanceMatrix);
     this.heatmapData2 = this.formatHeatmapData(this.directDistanceMatrix);
-
-    console.log('Heatmap Data 1:', this.heatmapData1);
-    console.log('Heatmap Data 2:', this.heatmapData2);
   }
 
   formatHeatmapData(matrix: number[][]): ChartData<'bubble'> {
@@ -59,7 +53,7 @@ export class HeatmapAnalysisComponent implements OnChanges {
   }
 
   getColorForValue(value: number): string {
-    const alpha = value / 100; // Adjust the divisor to match your data scale
+    const alpha = value / 100;
     return `rgba(255, 0, 0, ${alpha})`;
   }
 }
