@@ -56,3 +56,11 @@ export function arraysEqual(arr1: any, arr2: any) {
   }
   return true;
 }
+
+export function getSecondsBetweenDates(date1: Date): number {
+  const date2: Date = new Date()
+  const differenceInMilliseconds = Math.abs(date2.getTime() - date1.getTime());
+  const differenceInSeconds = differenceInMilliseconds / 1000;
+  console.log(differenceInSeconds)
+  return differenceInSeconds;
+}

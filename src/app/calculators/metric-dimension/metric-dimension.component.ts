@@ -1,8 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
+import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import * as XLSX from 'xlsx';
-import {MetricDimensionDialogComponent} from './metric-dimension-dialog/metric-dimension-dialog.component';
-import {CalculatorsService} from '../calculators.service';
+import { MetricDimensionDialogComponent } from './metric-dimension-dialog/metric-dimension-dialog.component';
+import { CalculatorsService } from '../calculators.service';
+import {getSecondsBetweenDates} from "../../functions";
+import {FormControl} from "@angular/forms";
 
 @Component({
   selector: 'app-metric-dimension',
@@ -13,13 +15,13 @@ export class MetricDimensionComponent implements OnInit {
   n: number = 0;
   table: (number | null)[][] = [];
   displayedColumns: string[] = [];
-  resolvingSets: string[][] = [];
+  resolvingSets: any[][] = [];
   minCardinalitySets: string[][] = [];
   minimalMetricSets: string[][] = [];
   metricDimension: number = 0;
+  adjacencyMatrixInformation: number[] = [];
 
-  constructor(public dialog: MatDialog, private calculatorsService: CalculatorsService) {
-  }
+  constructor(public dialog: MatDialog, private calculatorsService: CalculatorsService) {}
 
   ngOnInit(): void {
     let navigatedData: any = null;
@@ -31,33 +33,30 @@ export class MetricDimensionComponent implements OnInit {
         this.table = navigatedData as any;
         this.n = this.table.length;
         this.generateTable(this.n, true);
-        this.adjacencyMatrixInformation = value.adjacencyMatrix.map((vertex: boolean[])=> {
+        this.adjacencyMatrixInformation = value.adjacencyMatrix.map((vertex: boolean[]) => {
           let count = 0;
-          vertex.forEach(e=> {
-            if (e) count++
-          })
-          return count
-        })
-        console.log(this.adjacencyMatrixInformation)
+          vertex.forEach(e => {
+            if (e) count++;
+          });
+          return count;
+        });
+        console.log(this.adjacencyMatrixInformation);
       } else {
         this.table = [];
         this.displayedColumns = [];
       }
     });
-
-
     console.log('Table after init:', this.table);
   }
-  adjacencyMatrixInformation = [];
 
-    generateTable(n: number, fromData: boolean = false): void {
+  generateTable(n: number, fromData: boolean = false): void {
     if (!fromData) {
-      this.table = Array.from({length: n}, () => Array.from({length: n}, () => null));
+      this.table = Array.from({ length: n }, () => Array.from({ length: n }, () => null));
       for (let i = 0; i < n; i++) {
         this.table[i][i] = 0;
       }
     }
-    this.displayedColumns = ['header', ...Array.from({length: n}, (_, i) => `col${i + 1}`)];
+    this.displayedColumns = ['header', ...Array.from({ length: n }, (_, i) => `col${i + 1}`)];
   }
 
   updateValue(i: number, j: number, event: Event): void {
@@ -68,28 +67,76 @@ export class MetricDimensionComponent implements OnInit {
       this.table[j][i] = numValue;
     }
   }
-
+  batchSize = 6;
   async findResolvingSets(): Promise<void> {
-    const startTime = new Date()
-    return new Promise<void>((resolve, reject) => {
-      const worker = new Worker(new URL('../metric-dimension/resolving-sets.worker', import.meta.url));
-      worker.onmessage = ({data}) => {
-        this.resolvingSets = data.resolvingSets;
-        console.log(this.resolvingSets);
-        this.sortResolvingSets();
-        this.findMinCardinalitySets();
-        this.findMinimalMetricSets();
-        console.log('Start Time: ', startTime, 'End Time: ', new Date())
-        this.openDialog();
-        resolve();
-      };
+    const distinctSetsAgainstOrderedPairs = this.findEntriesOfDiscernibilityMatrix(this.n, this.table);
+    const totalPairs = distinctSetsAgainstOrderedPairs.length - 1;
+    const batchSize: number = this.batchSize;
+    console.log('batchSize', batchSize);
+    const startTime = new Date();
+    let totalSets = 0;
 
-      worker.onerror = (error) => {
-        reject(error);
-      };
+    // Initialize an empty array to store all promises
+    const workerPromises = [];
 
-      worker.postMessage({n: this.n, table: this.table});
+    for (let i = 0; i < totalPairs; i += batchSize) {
+      console.log(`Batch ${Math.floor(i / batchSize) + 1} started at ${new Date()}`);
+      // Create a batch of promises
+      const currentBatchPromises = [];
+
+      for (let j = i; j < i + batchSize && j < totalPairs; j++) {
+        const worker = new Worker(new URL('./processPairWorker', import.meta.url));
+
+        const promise = new Promise<void>((resolve, reject) => {
+          worker.onmessage = ({ data }) => {
+            this.resolvingSets.push(...data);
+            // totalSets = totalSets + data.length;
+            worker.terminate();
+            resolve();
+          };
+
+          worker.onerror = (error) => {
+            reject(error);
+          };
+
+          worker.postMessage({ distinctSetsAgainstOrderedPairs, i: j, j: j + 1 });
+        });
+
+        currentBatchPromises.push(promise);
+      }
+
+      // Wait for the current batch to complete before proceeding to the next batch
+      await Promise.all(currentBatchPromises);
+      console.log(`Batch ${Math.floor(i / batchSize) + 1} completed at ${new Date()}`);
+    }
+
+    getSecondsBetweenDates(startTime)
+
+    // console.log(this.resolvingSets);
+    // console.log('totalSets', totalSets);
+
+    const distinctMinimalResolvingSets = this.getDistinctArrays(this.resolvingSets);
+    const filteredDistinctMinimalResolvingSets = distinctMinimalResolvingSets.filter(e => !this.isProperSupersetOfAny(e, distinctMinimalResolvingSets));
+
+    console.log('Final Minimal Resolving Sets (Distinct):', filteredDistinctMinimalResolvingSets);
+    console.log('End: ', new Date());
+
+    // this.sortResolvingSets();
+    // this.findMinCardinalitySets();
+    // this.findMinimalMetricSets();
+    // this.openDialog();
+  }
+
+  getDistinctArrays(arrays: number[][]) {
+    const distinctArrays: number[][] = [];
+
+    arrays.forEach(array => {
+      if (!distinctArrays.some(distinctArray => this.arraysAreEqual(array, distinctArray))) {
+        distinctArrays.push(array);
+      }
     });
+
+    return distinctArrays;
   }
 
   private sortResolvingSets(): void {
@@ -132,7 +179,7 @@ export class MetricDimensionComponent implements OnInit {
 
   calculateDistanceMatrixUsingList(adjList: any): number[][] {
     const n = adjList.length;
-    const distanceMatrix: number[][] = Array.from({length: n}, () => Array(n).fill(Infinity));
+    const distanceMatrix: number[][] = Array.from({ length: n }, () => Array(n).fill(Infinity));
 
     const bfs = (start: number) => {
       const queue: number[] = [start];
@@ -170,10 +217,65 @@ export class MetricDimensionComponent implements OnInit {
     return distanceMatrix;
   }
 
+  findEntriesOfDiscernibilityMatrix(n, table) {
+    const resolvants = [];
+    const resolvantsAgainstPairs = [];
+
+    for (let i = 1; i < n; i++) {
+      for (let j = i + 1; j <= n; j++) {
+        const resolvent = [];
+        for (let [index, row] of table.entries()) {
+          if (row[i - 1] !== row[j - 1]) {
+            resolvent.push(index + 1);
+          }
+        }
+        resolvantsAgainstPairs.push([`(${i}, ${j})`, resolvent]);
+        resolvants.push(resolvent);
+      }
+    }
+
+    const distinctPairs = this.getDistinctPairs(resolvantsAgainstPairs);
+    console.log(distinctPairs.length);
+    const filteredDistinctPairs = [];
+    for (let pair of distinctPairs) {
+      if (!this.isProperSupersetOfAny(pair[1], resolvants)) {
+        filteredDistinctPairs.push(pair);
+      }
+    }
+    console.log(filteredDistinctPairs.length);
+    return filteredDistinctPairs;
+  }
+
+  getDistinctPairs(arr) {
+    const distinctPairs = [];
+    for (const pair of arr) {
+      const [, value] = pair;
+      if (!distinctPairs.some(([_, v]) => this.arraysAreEqual(v, value))) {
+        distinctPairs.push(pair);
+      }
+    }
+    return distinctPairs;
+  }
+
+  isProperSupersetOfAny(subset, resolvingSets) {
+    return resolvingSets.some(set => this.isProperSuperset(subset, set));
+  }
+
+  isProperSuperset(superset, subset) {
+    return superset.length > subset.length && subset.every(value => superset.includes(value));
+  }
+
+  arraysAreEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) return false;
+    const sortedArr1 = [...arr1].sort((a, b) => a - b);
+    const sortedArr2 = [...arr2].sort((a, b) => a - b);
+    return sortedArr1.every((value, index) => value === sortedArr2[index]);
+  }
+
   async exportToLatex() {
     await this.findResolvingSets().then(() => {
       const latex = this.generateLatex();
-      const blob = new Blob([latex], {type: 'text/plain;charset=utf-8'});
+      const blob = new Blob([latex], { type: 'text/plain;charset=utf-8' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
       link.download = 'results.tex';
@@ -240,25 +342,19 @@ export class MetricDimensionComponent implements OnInit {
   }
 
   exportGraphParamsToExcel(): void {
-    // Example data array
-    const data: number[] = this.adjacencyMatrixInformation; // Replace this with your actual data array
+    const data: number[] = this.adjacencyMatrixInformation;
 
-    // Create the data array in the desired format
     const dataArray: (string | number)[][] = data.map((value, index) => [`v${index + 1}`, value]);
 
-    // Create the header row
     const headers: string[] = ['Vertex', 'Degree'];
 
-    // Add the header to the data array
     dataArray.unshift(headers);
 
-    // Create the worksheet and workbook
     const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(dataArray);
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
 
-    // Append the worksheet to the workbook
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
 
-    // Write the workbook to a file
     XLSX.writeFile(wb, 'graph-parameters.xlsx');
-  }}
+  }
+}
