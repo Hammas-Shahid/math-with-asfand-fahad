@@ -36,7 +36,7 @@ import { AllResolvingSetsComponent } from './metric-dimension/all-resolving-sets
 import { OnlyMetricDimensionComponent } from './metric-dimension/only-metric-dimension/only-metric-dimension.component';
 import { DiscernibilityMatrixComponent } from './metric-dimension/discernibility-matrix/discernibility-matrix.component';
 import { ReductsViaDiscernibilityMatrixComponent } from './metric-dimension/reducts-via-discernibility-matrix/reducts-via-discernibility-matrix.component';
-import {MatTab, MatTabGroup} from "@angular/material/tabs";
+import {MatTab, MatTabContent, MatTabGroup} from "@angular/material/tabs";
 
 Chart.register(...registerables);
 
@@ -87,6 +87,7 @@ Chart.register(...registerables);
     BaseChartDirective,
     MatTabGroup,
     MatTab,
+    MatTabContent,
   ]
 })
 export class CalculatorsModule { }
