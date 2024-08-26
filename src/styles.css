@@ -21,3 +21,19 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .mat-card-actions {
   padding: 8px 16px;
 }
+
+.padZero {
+  .mat-mdc-cell {
+    background: inherit;
+    padding: 0 !important;
+  }
+
+  .mdc-data-table__cell {
+    padding: 0 !important;
+  }
+
+  .mat-mdc-table .mat-mdc-header-cell {
+    background: inherit;
+    padding: 0 !important;
+  }
+}
