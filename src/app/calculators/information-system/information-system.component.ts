@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import {arraysEqual, divisors, getGCD, isPrime, zeroDivisors} from "../../functions";
 import {FormControl} from "@angular/forms";
+import {row} from "mathjs";
 
 @Component({
   selector: 'app-information-system',
@@ -32,7 +33,6 @@ export class InformationSystemComponent {
       this.updateTable(this.numberInput.value, v)
     })
     this.primeNumberInput.valueChanges.subscribe(v=> {
-      console.log(v)
       this.updateTable(this.numberInput.value, TableModes.reduct)
     })
     this.selectedDivisorsFC.valueChanges.subscribe(v=> {
@@ -40,17 +40,17 @@ export class InformationSystemComponent {
     })
   }
 
-  IS(zd: number, divs: number[], number: number) {
-    let gcd = getGCD(zd, number);
+  informationSystem(zeroDivisor: number, divs: number[], number: number) {
+    let gcd = getGCD(zeroDivisor, number);
     let result = [];
-    for (let d of divs) {
-      if (gcd % d !== 0) {
+    for (let divisor of divs) {
+      if (gcd % divisor !== 0) {
         result.push(0);
         continue;
       }
       let i = 1;
       while (i < number) {
-        if (gcd % (d ** i) === 0 && gcd % (d ** (i + 1)) !== 0) {
+        if (gcd % (divisor ** i) === 0 && gcd % (divisor ** (i + 1)) !== 0) {
           result.push(i);
           break;
         }
@@ -60,7 +60,7 @@ export class InformationSystemComponent {
     return result;
   }
 
-  updateTable(number: string,mode: string, selectDivs?: number[], showZd: boolean = this.selectDivsOrZeroDivs): void {
+  updateTable(number: string, mode: string, selectDivs?: number[], showZd: boolean = this.selectDivsOrZeroDivs): void {
     const num = parseInt(number);
     let divs: number[] = []
     if (!selectDivs) {
@@ -112,7 +112,7 @@ export class InformationSystemComponent {
       zeroDivs = this.divisors;
     }
     let rows = zeroDivs.map(zd => {
-      const results = this.IS(zd, divs, num);
+      const results = this.informationSystem(zd, divs, num);
       return { zeroDivisors: zd, results: results.reduce((acc, result, index) => ({ ...acc, [divs[index]]: result }), {}), duplicates: [] as any, isSelected: false};
     });
 

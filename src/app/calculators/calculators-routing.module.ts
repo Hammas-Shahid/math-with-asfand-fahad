@@ -8,6 +8,7 @@ import {DirectDistanceComponent} from "./direct-distance/direct-distance.compone
 import {ComparisonAnalysisComponent} from "./comparison-analysis/comparison-analysis.component";
 import {iframeViewerComponent} from "./iframe-viewer/iframe-viewer.component";
 import {AdjacencyListInputComponent} from "./adjacency-list-input/adjacency-list-input.component";
+import {GetAdjacencyMatrixComponent} from "./get-adjacency-matrix/get-adjacency-matrix.component";
 
 const routes: Routes = [
   { path: 'metric-dimension', component: MetricDimensionComponent, canActivate: [CalculatorPinGuard] },
@@ -16,7 +17,8 @@ const routes: Routes = [
   { path: 'direct-distance', component: DirectDistanceComponent, canActivate: [CalculatorPinGuard] },
   { path: 'comparison-analysis', component: ComparisonAnalysisComponent, canActivate: [CalculatorPinGuard] },
   { path: 'iframe', component: iframeViewerComponent },
-  { path: 'adjacency-list', component: AdjacencyListInputComponent }
+  { path: 'adjacency-list', component: AdjacencyListInputComponent },
+  { path: 'generate-adjacency-matrix', component: GetAdjacencyMatrixComponent }
 ];
 
 @NgModule({

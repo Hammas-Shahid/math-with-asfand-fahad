@@ -19,7 +19,8 @@ export class AuthService {
     'vector-calculator': ' ',
     'information-system': ' ',
     'direct-distance': ' ',
-    'comparison-analysis': ' '
+    'comparison-analysis': ' ',
+    'generate-adjacency-matrix': ' '
   };
 
   isRouteVerified(route: string): boolean {

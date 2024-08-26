@@ -31,6 +31,7 @@ import {BaseChartDirective, provideCharts, withDefaultRegisterables} from "ng2-c
 import { Chart, registerables } from 'chart.js';
 import {iframeViewerComponent} from "./iframe-viewer/iframe-viewer.component";
 import { AdjacencyListInputComponent } from './adjacency-list-input/adjacency-list-input.component';
+import { GetAdjacencyMatrixComponent } from './get-adjacency-matrix/get-adjacency-matrix.component';
 
 Chart.register(...registerables);
 
@@ -50,7 +51,8 @@ Chart.register(...registerables);
     PcaAnalysisComponent,
     HeatmapAnalysisComponent,
     iframeViewerComponent,
-    AdjacencyListInputComponent
+    AdjacencyListInputComponent,
+    GetAdjacencyMatrixComponent
   ],
   imports: [
     CommonModule,
