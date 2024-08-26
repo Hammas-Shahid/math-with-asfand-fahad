@@ -5,6 +5,12 @@
       <mat-label>Table Dimensions 'n'</mat-label>
       <input matInput type="number" placeholder="Enter n" [(ngModel)]="n" aria-label="Number of dimensions">
     </mat-form-field>
+
+    <mat-form-field appearance="fill" style="margin-left: 16px">
+      <mat-label>Title</mat-label>
+      <input matInput placeholder="Enter Title" [(ngModel)]="title" aria-label="Number of dimensions">
+    </mat-form-field>
+
     <button mat-raised-button color="primary" (click)="generateTable(n)" aria-label="Generate table" style="margin-left: 6px">
       Generate Table
     </button>

@@ -14,6 +14,7 @@ export class DiscernibilityMatrixComponent implements OnInit{
   displayedColumns: string[] = [];
   adjacencyMatrixInformation: number[] = [];
   discernibilityMatrix = [];
+  title: string = '';
 
   constructor(private calculatorsService: CalculatorsService) {}
 
@@ -22,6 +23,7 @@ export class DiscernibilityMatrixComponent implements OnInit{
     this.calculatorsService.metricTableDataSubject.subscribe(value => {
       navigatedData = value.adjacencyList;
       if (navigatedData) {
+        this.title = `Graph Id: ${value.graphId}`;
         console.log('Received state:', navigatedData);
         navigatedData = this.calculateDistanceMatrixUsingList(navigatedData);
         this.table = navigatedData as any;
@@ -145,6 +147,7 @@ export class DiscernibilityMatrixComponent implements OnInit{
     const latexContent = `
   \\documentclass{article}
   \\begin{document}
+  $$${this.title}$$
   ${formattedData}
   \\end{document}
   `;
