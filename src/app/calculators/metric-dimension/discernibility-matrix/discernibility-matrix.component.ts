@@ -128,7 +128,7 @@ export class DiscernibilityMatrixComponent implements OnInit{
 
         const result = resolvantsAgainstPairs.map(e => {
           const map = e[1].map(el => `v_{${el}}`);
-          return `$$${e[0]} =  \\{${map.join(', ')}\\}$$`;
+          return `$$${e[0]} =  \\{${map}\\}$$`;
         });
 
         resolve(result);
@@ -141,7 +141,7 @@ export class DiscernibilityMatrixComponent implements OnInit{
    async downloadAsLatex() {
     this.discernibilityMatrix = await this.findEntriesOfDiscernibilityMatrix(this.n, this.table);
     // Convert your data to LaTeX format
-    const formattedData = this.discernibilityMatrix; // Add LaTeX new line command \\
+    const formattedData = this.discernibilityMatrix.join('\\\\'); // Add LaTeX new line command \\
     const latexContent = `
   \\documentclass{article}
   \\begin{document}
