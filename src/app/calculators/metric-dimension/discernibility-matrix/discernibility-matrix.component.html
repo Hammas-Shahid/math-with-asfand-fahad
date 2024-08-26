@@ -24,7 +24,7 @@
       <ng-container *ngFor="let col of displayedColumns.slice(1); let i = index" [matColumnDef]="col">
         <th mat-header-cell *matHeaderCellDef> v<sub>{{i + 1}}</sub> </th>
         <td mat-cell *matCellDef="let row; let j = index">
-          <input matInput type="number" [value]="row[i]" (input)="updateValue(j, i, $event)" class="mat-input-element" style="width: {{n.toString().length * 13}}px">
+          <input matInput [value]="row[i]" (input)="updateValue(j, i, $event)" class="mat-input-element" style="width: {{n.toString().length * 13}}px">
         </td>
       </ng-container>
 
