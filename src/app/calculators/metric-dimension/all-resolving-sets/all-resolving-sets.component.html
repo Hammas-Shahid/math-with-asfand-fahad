@@ -1,0 +1,54 @@
+<div style="display: flex">
+  <h2 style="padding: 6px">Find Resolving Sets and Metric Dimensions</h2>
+  <div style="margin: 6px 0 0 10px;">
+    <mat-form-field appearance="fill">
+      <mat-label>Table Dimensions 'n'</mat-label>
+      <input matInput type="number" placeholder="Enter n" [(ngModel)]="n" aria-label="Number of dimensions">
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="generateTable(n)" aria-label="Generate table" style="margin-left: 6px">
+      Generate Table
+    </button>
+  </div>
+</div>
+
+<div class="padding-10p" *ngIf="table.length > 0">
+  <div class="table-container">
+    <table mat-table [dataSource]="table" class="mat-elevation-z8">
+      <!-- Header Column -->
+      <ng-container matColumnDef="header">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let row; let j = index" style="font-weight: 500">v<sub>{{j + 1}}</sub></td>
+      </ng-container>
+
+      <!-- Define Other Columns -->
+      <ng-container *ngFor="let col of displayedColumns.slice(1); let i = index" [matColumnDef]="col">
+        <th mat-header-cell *matHeaderCellDef> v<sub>{{i + 1}}</sub> </th>
+        <td mat-cell *matCellDef="let row; let j = index">
+          <input matInput type="number" [value]="row[i]" (input)="updateValue(j, i, $event)" class="mat-input-element" style="width: {{n.toString().length * 13}}px">
+        </td>
+      </ng-container>
+
+      <!-- Row Definitions -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+
+  <div>
+    <button mat-raised-button color="primary" (click)="findResolvingSets()" aria-label="Find resolving sets" style="padding: 10px">
+      Get Results
+    </button>
+    <button mat-raised-button color="accent" (click)="exportToLatex()" aria-label="Export to LaTeX" style="margin-left: 10px; padding: 10px">
+      Export to LaTeX
+    </button>
+    <button mat-raised-button color="accent" (click)="exportToPDF()" aria-label="Export to PDF" style="margin-left: 10px; padding: 10px">
+      Export to PDF
+    </button>
+    <button *ngIf="isTableFullyFilled()" mat-raised-button color="accent" (click)="exportToExcel()" aria-label="Export to Excel" style="margin-left: 10px; padding: 10px">
+      Export to Excel
+    </button>
+    <button *ngIf="isTableFullyFilled()" mat-raised-button color="accent" (click)="exportGraphParamsToExcel()" style="margin-left: 10px; padding: 10px">
+      Export Graph Parameters
+    </button>
+  </div>
+</div>

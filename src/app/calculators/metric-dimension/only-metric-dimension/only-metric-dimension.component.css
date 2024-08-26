@@ -1,0 +1,14 @@
+.table-container {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.mat-input-element {
+  width: 38px; /* Adjust the width as needed */
+  padding: 0;
+  margin: 0;
+}
+
+.padding-10p {
+  padding: 10px;
+}

@@ -32,6 +32,11 @@ import { Chart, registerables } from 'chart.js';
 import {iframeViewerComponent} from "./iframe-viewer/iframe-viewer.component";
 import { AdjacencyListInputComponent } from './adjacency-list-input/adjacency-list-input.component';
 import { GetAdjacencyMatrixComponent } from './get-adjacency-matrix/get-adjacency-matrix.component';
+import { AllResolvingSetsComponent } from './metric-dimension/all-resolving-sets/all-resolving-sets.component';
+import { OnlyMetricDimensionComponent } from './metric-dimension/only-metric-dimension/only-metric-dimension.component';
+import { DiscernibilityMatrixComponent } from './metric-dimension/discernibility-matrix/discernibility-matrix.component';
+import { ReductsViaDiscernibilityMatrixComponent } from './metric-dimension/reducts-via-discernibility-matrix/reducts-via-discernibility-matrix.component';
+import {MatTab, MatTabGroup} from "@angular/material/tabs";
 
 Chart.register(...registerables);
 
@@ -52,7 +57,11 @@ Chart.register(...registerables);
     HeatmapAnalysisComponent,
     iframeViewerComponent,
     AdjacencyListInputComponent,
-    GetAdjacencyMatrixComponent
+    GetAdjacencyMatrixComponent,
+    AllResolvingSetsComponent,
+    OnlyMetricDimensionComponent,
+    DiscernibilityMatrixComponent,
+    ReductsViaDiscernibilityMatrixComponent
   ],
   imports: [
     CommonModule,
@@ -76,6 +85,8 @@ Chart.register(...registerables);
     MatSelect,
     MatOption,
     BaseChartDirective,
+    MatTabGroup,
+    MatTab,
   ]
 })
 export class CalculatorsModule { }
