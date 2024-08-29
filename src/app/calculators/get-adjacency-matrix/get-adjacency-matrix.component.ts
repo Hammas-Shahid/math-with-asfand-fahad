@@ -12,10 +12,14 @@ export class GetAdjacencyMatrixComponent {
   numberInput = new FormControl();
   adjacencyMatrix: number[][] = [];
   displayedColumns: string[] = [];
+  embedding: number[][] = [];
 
   constructor() {
     this.numberInput.valueChanges.subscribe(value => {
-      this.generateAdjacencyMatrix(parseInt(value));
+      if (value && !isNaN(value)) {
+        this.generateAdjacencyMatrix(parseInt(value));
+        this.generateEmbedding();
+      }
     });
   }
 
@@ -23,19 +27,12 @@ export class GetAdjacencyMatrixComponent {
     let divs: number[] = divisors(num);
 
     // Initialize a square matrix with zeros
-    const matrix: number[][] = Array.from({ length: divs.length }, () => Array(divs.length).fill(1));
+    const matrix: number[][] = Array.from({ length: divs.length }, () => Array(divs.length).fill(0));
 
     // Populate the adjacency matrix
     for (let i = 0; i < divs.length; i++) {
       for (let j = 0; j < divs.length; j++) {
-        // Set matrix[i][j] to 0 if divs[i] is related to divs[j] based on some condition
-        if (divs[i] === divs[j]) {
-          matrix[i][j] = 0;
-        }
-        else if (getGCD(divs[i], divs[j]) === 1){
-          matrix[i][j] = 0;
-        }
-        else {
+        if (i !== j && getGCD(divs[i], divs[j]) !== 1) {
           matrix[i][j] = 1;
         }
       }
@@ -44,6 +41,55 @@ export class GetAdjacencyMatrixComponent {
     this.displayedColumns = divs.map(div => div.toString());
     this.adjacencyMatrix = matrix;
     return matrix;
+  }
+
+  generateEmbedding() {
+    const size = this.adjacencyMatrix.length;
+    this.embedding = Array.from({ length: size }, (_, i) => [
+      (Math.cos((2 * Math.PI * i) / size) * 1.5), // Scale to fit the range -1.5 to 1.5
+      (Math.sin((2 * Math.PI * i) / size) * 1.5)  // Scale to fit the range -1.5 to 1.5
+    ]);
+  }
+
+  generateAdjacencyListWithEmbedding(): string[] {
+    const adjList: string[] = [];
+
+    // First line should be the number of vertices
+    adjList.push(`${this.adjacencyMatrix.length}`);
+
+    // Create adjacency list with embedding coordinates
+    for (let i = 0; i < this.adjacencyMatrix.length; i++) {
+      const connections: number[] = [];
+
+      for (let j = 0; j < this.adjacencyMatrix.length; j++) {
+        if (this.adjacencyMatrix[i][j] === 1) {
+          connections.push(j); // Adjusting index to start from 1
+        }
+      }
+
+      const coords = this.embedding[i];
+      // Ensure formatting is consistent and properly spaced
+      adjList.push(`${coords[0].toFixed(6)} ${coords[1].toFixed(6)} ${connections.join(' ')}`);
+    }
+
+    return adjList;
+  }
+
+  downloadAdjacencyListAsTXT() {
+    if (this.adjacencyMatrix.length === 0) {
+      return;
+    }
+
+    const adjList = this.generateAdjacencyListWithEmbedding();
+
+    // Convert adjacency list to plain text format
+    const txtContent = adjList.join('\n');
+
+    // Create a Blob from the plain text content
+    const blob = new Blob([txtContent], { type: 'text/plain;charset=utf-8;' });
+
+    // Use FileSaver.js to save the file
+    saveAs(blob, 'adjacency_list.txt');
   }
 
   downloadMatrixAsTXT() {
