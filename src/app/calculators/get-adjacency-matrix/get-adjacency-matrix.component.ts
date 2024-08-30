@@ -1,7 +1,7 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { divisors, getGCD } from '../../functions';
-import { saveAs } from 'file-saver';
+import {Component, OnInit, ElementRef, ViewChild} from '@angular/core';
+import {FormControl} from '@angular/forms';
+import {divisors, getGCD} from '../../functions';
+import {saveAs} from 'file-saver';
 import * as d3 from 'd3';
 
 @Component({
@@ -14,7 +14,7 @@ export class GetAdjacencyMatrixComponent implements OnInit {
   adjacencyMatrix: number[][] = [];
   displayedColumns: string[] = [];
   embedding: number[][] = [];
-  @ViewChild('graphContainer', { static: true }) private graphContainer!: ElementRef;
+  @ViewChild('graphContainer', {static: true}) private graphContainer!: ElementRef;
 
   constructor() {
     this.numberInput.valueChanges.subscribe(value => {
@@ -33,7 +33,7 @@ export class GetAdjacencyMatrixComponent implements OnInit {
   generateAdjacencyMatrix(num: number): number[][] {
     let divs: number[] = divisors(num);
 
-    const matrix: number[][] = Array.from({ length: divs.length }, () => Array(divs.length).fill(0));
+    const matrix: number[][] = Array.from({length: divs.length}, () => Array(divs.length).fill(0));
 
     for (let i = 0; i < divs.length; i++) {
       for (let j = 0; j < divs.length; j++) {
@@ -50,7 +50,7 @@ export class GetAdjacencyMatrixComponent implements OnInit {
 
   generateEmbedding() {
     const size = this.adjacencyMatrix.length;
-    this.embedding = Array.from({ length: size }, (_, i) => [
+    this.embedding = Array.from({length: size}, (_, i) => [
       (Math.cos((2 * Math.PI * i) / size) * 1.5),
       (Math.sin((2 * Math.PI * i) / size) * 1.5)
     ]);
@@ -82,7 +82,7 @@ export class GetAdjacencyMatrixComponent implements OnInit {
 
     const adjList = this.generateAdjacencyListWithEmbedding();
     const txtContent = adjList.join('\n');
-    const blob = new Blob([txtContent], { type: 'text/plain;charset=utf-8;' });
+    const blob = new Blob([txtContent], {type: 'text/plain;charset=utf-8;'});
     saveAs(blob, 'adjacency_list.txt');
   }
 
@@ -97,7 +97,7 @@ export class GetAdjacencyMatrixComponent implements OnInit {
       txtContent += row + '\n';
     });
 
-    const blob = new Blob([txtContent], { type: 'text/plain;charset=utf-8;' });
+    const blob = new Blob([txtContent], {type: 'text/plain;charset=utf-8;'});
     saveAs(blob, 'adjacency_matrix.txt');
   }
 
@@ -107,11 +107,13 @@ export class GetAdjacencyMatrixComponent implements OnInit {
     const svg = d3.select(this.graphContainer.nativeElement).select('svg');
     svg.selectAll('*').remove(); // Clear existing content
 
-    const width = +svg.attr('width');
-    const height = +svg.attr('height');
+    const svgElement = svg.node() as SVGSVGElement;
+    const container = svgElement.parentElement as HTMLElement;
+    const width = container.clientHeight;
+    const height = container.clientHeight;
     const padding = 50; // Padding around the graph
 
-    // Define nodes with labels
+    // Define nodes with labels and apply padding
     const nodes = this.embedding.map((coord, i) => ({
       id: i,
       x: coord[0] * (width / 3) + (width / 2),
@@ -119,8 +121,18 @@ export class GetAdjacencyMatrixComponent implements OnInit {
       label: this.displayedColumns[i] // Label the node with the divisor
     }));
 
-    // Set the viewBox to scale and position the graph
-    svg.attr('viewBox', `0 0 ${width} ${height}`)
+    // Calculate the bounding box dimensions considering padding
+    const minX = d3.min(nodes, d => d.x) - padding;
+    const maxX = d3.max(nodes, d => d.x) + padding;
+    const minY = d3.min(nodes, d => d.y) - padding;
+    const maxY = d3.max(nodes, d => d.y) + padding;
+
+    // Calculate content dimensions
+    const contentWidth = maxX - minX;
+    const contentHeight = maxY - minY;
+
+    // Adjust viewBox to fit the content
+    svg.attr('viewBox', `${minX} ${minY} ${contentWidth} ${contentHeight}`)
       .attr('preserveAspectRatio', 'xMidYMid meet');
 
     // Create a zoom behavior
@@ -138,7 +150,10 @@ export class GetAdjacencyMatrixComponent implements OnInit {
 
     // Draw links
     g.selectAll('line')
-      .data(this.adjacencyMatrix.flatMap((row, i) => row.map((val, j) => (val === 1 ? { source: i, target: j } : null)).filter(v => v)))
+      .data(this.adjacencyMatrix.flatMap((row, i) => row.map((val, j) => (val === 1 ? {
+        source: i,
+        target: j
+      } : null)).filter(v => v)))
       .enter()
       .append('line')
       .attr('x1', d => nodes[d.source].x)
@@ -154,8 +169,11 @@ export class GetAdjacencyMatrixComponent implements OnInit {
       .append('circle')
       .attr('cx', d => d.x)
       .attr('cy', d => d.y)
-      .attr('r', 5)
-      .attr('fill', 'blue');
+      .attr('r', 10)
+      .attr('fill', 'rgb(100, 175, 255)')
+      .attr('fill-opacity', 0.7)
+      .attr('stroke', 'rgb(100, 175, 255)')
+      .attr('stroke-width', 2);
 
     // Add labels
     g.selectAll('text')
@@ -164,9 +182,11 @@ export class GetAdjacencyMatrixComponent implements OnInit {
       .append('text')
       .attr('x', d => d.x)
       .attr('y', d => d.y)
-      .attr('dy', -10) // Position label above the node
+      .attr('dy', -15)
       .attr('text-anchor', 'middle')
       .text(d => d.label)
-      .attr('font-size', '18px')
-      .attr('fill', 'red');
-  }}
+      .attr('font-size', '22px')
+      .attr('fill', 'red')
+      .attr('font-weight', '500');
+  }
+}
