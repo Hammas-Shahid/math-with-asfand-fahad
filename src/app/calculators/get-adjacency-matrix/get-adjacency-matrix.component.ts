@@ -155,7 +155,7 @@ export class GetAdjacencyMatrixComponent implements OnInit {
       .attr('cx', d => d.x)
       .attr('cy', d => d.y)
       .attr('r', 5)
-      .attr('fill', 'red');
+      .attr('fill', 'blue');
 
     // Add labels
     g.selectAll('text')
@@ -167,6 +167,6 @@ export class GetAdjacencyMatrixComponent implements OnInit {
       .attr('dy', -10) // Position label above the node
       .attr('text-anchor', 'middle')
       .text(d => d.label)
-      .attr('font-size', '12px')
-      .attr('fill', 'black');
+      .attr('font-size', '18px')
+      .attr('fill', 'red');
   }}
