@@ -212,7 +212,7 @@ export class GetAdjacencyMatrixComponent implements OnInit {
 
   zoomOut() {
     const svg = d3.select(this.graphContainer.nativeElement).select('svg');
-    svg.transition().call(this.zoom.scaleBy, 0.75);
+    svg.transition().call(this.zoom.scaleBy, 0.666);
   }
 
   resetZoom() {
