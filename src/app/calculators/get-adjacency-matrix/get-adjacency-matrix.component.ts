@@ -16,6 +16,8 @@ export class GetAdjacencyMatrixComponent implements OnInit {
   embedding: number[][] = [];
   isGraphCreated = false;
   @ViewChild('graphContainer', {static: true}) private graphContainer!: ElementRef;
+  private zoom!: d3.ZoomBehavior<Element, unknown>;
+
 
   constructor() {
     this.numberInput.valueChanges.subscribe(value => {
@@ -142,14 +144,19 @@ export class GetAdjacencyMatrixComponent implements OnInit {
       .attr('preserveAspectRatio', 'xMidYMid meet');
 
     // Create a zoom behavior
-    const zoom = d3.zoom()
+    this.zoom = d3.zoom()
       .scaleExtent([0.5, 5]) // Zoom scale range
       .on('zoom', (event) => {
         svg.selectAll('g').attr('transform', event.transform);
       });
 
+    svg.on('dblclick.zoom', (event) => {
+      const [x, y] = d3.pointer(event, svg.node());
+      svg.transition().call(this.zoom.scaleBy, 2, [x, y]); // Zoom in on double-click
+    });
+
     // Apply zoom behavior
-    svg.call(zoom);
+    svg.call(this.zoom);
 
     // Create a group element to contain all graph elements
     const g = svg.append('g');
@@ -196,5 +203,15 @@ export class GetAdjacencyMatrixComponent implements OnInit {
       .attr('font-weight', '500');
 
     this.isGraphCreated = true;
+  }
+
+  zoomIn() {
+    const svg = d3.select(this.graphContainer.nativeElement).select('svg');
+    svg.transition().call(this.zoom.scaleBy, 1.5);
+  }
+
+  zoomOut() {
+    const svg = d3.select(this.graphContainer.nativeElement).select('svg');
+    svg.transition().call(this.zoom.scaleBy, 0.75);
   }
 }

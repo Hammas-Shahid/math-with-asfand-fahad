@@ -24,4 +24,12 @@
 </div>
 <figure #graphContainer class="svg-container">
   <svg style="display: {{isGraphCreated ? 'block' : 'none'}}"></svg>
+  <div class="zoom-controls" style="display: {{isGraphCreated ? 'flex' : 'none'}}">
+    <button mat-icon-button (click)="zoomIn()">
+      <mat-icon>zoom_in</mat-icon>
+    </button>
+    <button mat-icon-button (click)="zoomOut()">
+      <mat-icon>zoom_out</mat-icon>
+    </button>
+  </div>
 </figure>

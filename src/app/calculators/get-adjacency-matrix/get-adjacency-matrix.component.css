@@ -22,3 +22,16 @@ svg {
   border-radius: 10px;
   box-shadow: 5px 10px 20px 10px #b3b3b3;
 }
+
+.zoom-controls {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  top: 40px;
+  right: 110px;
+}
+
+.hideFigure{
+  width: 0;
+  height: 0;
+}
