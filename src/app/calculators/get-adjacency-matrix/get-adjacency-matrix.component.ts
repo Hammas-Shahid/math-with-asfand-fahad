@@ -214,4 +214,45 @@ export class GetAdjacencyMatrixComponent implements OnInit {
     const svg = d3.select(this.graphContainer.nativeElement).select('svg');
     svg.transition().call(this.zoom.scaleBy, 0.75);
   }
+
+  resetZoom() {
+    const svg = d3.select(this.graphContainer.nativeElement).select('svg');
+    const g = svg.select('g');
+
+    // Reset the zoom
+    svg.transition().duration(750).call(this.zoom.transform, d3.zoomIdentity);
+
+    // Re-center the graph
+    const svgElement = svg.node() as SVGSVGElement;
+    const container = svgElement.parentElement as HTMLElement;
+    const width = container.clientHeight;
+    const height = container.clientHeight;
+    const padding = 50; // Padding around the graph
+
+    // Define nodes with labels and apply padding
+    const nodes = this.embedding.map((coord, i) => ({
+      id: i,
+      x: coord[0] * (width / 3) + (width / 2),
+      y: coord[1] * (height / 3) + (height / 2),
+      label: `v${this.displayedColumns[i]}`
+    }));
+
+    // Calculate the bounding box dimensions considering padding
+    const minX = d3.min(nodes, d => d.x) - padding;
+    const maxX = d3.max(nodes, d => d.x) + padding;
+    const minY = d3.min(nodes, d => d.y) - padding;
+    const maxY = d3.max(nodes, d => d.y) + padding;
+
+    // Calculate content dimensions
+    const contentWidth = maxX - minX;
+    const contentHeight = maxY - minY;
+
+    // Adjust viewBox to fit the content
+    svg.attr('viewBox', `${minX} ${minY} ${contentWidth} ${contentHeight}`)
+      .attr('preserveAspectRatio', 'xMidYMid meet');
+
+    // Reset the transform of the 'g' element
+    g.transition().duration(750).attr('transform', `translate(0,0) scale(1)`);
+  }
+
 }
