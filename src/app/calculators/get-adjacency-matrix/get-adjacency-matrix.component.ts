@@ -1,6 +1,6 @@
 import {Component, OnInit, ElementRef, ViewChild} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {divisors, getGCD} from '../../functions';
+import {divisors, getGCD, toSubscript} from '../../functions';
 import {saveAs} from 'file-saver';
 import * as d3 from 'd3';
 
@@ -14,6 +14,7 @@ export class GetAdjacencyMatrixComponent implements OnInit {
   adjacencyMatrix: number[][] = [];
   displayedColumns: string[] = [];
   embedding: number[][] = [];
+  isGraphCreated = false;
   @ViewChild('graphContainer', {static: true}) private graphContainer!: ElementRef;
 
   constructor() {
@@ -102,9 +103,14 @@ export class GetAdjacencyMatrixComponent implements OnInit {
   }
 
   drawGraph() {
-    if (!this.adjacencyMatrix.length || !this.embedding.length) return;
-
+    this.isGraphCreated = false;
     const svg = d3.select(this.graphContainer.nativeElement).select('svg');
+    if (!this.adjacencyMatrix.length || !this.embedding.length) {
+      svg.selectAll('*').remove(); // Clear existing content
+      return
+    }
+
+
     svg.selectAll('*').remove(); // Clear existing content
 
     const svgElement = svg.node() as SVGSVGElement;
@@ -118,7 +124,7 @@ export class GetAdjacencyMatrixComponent implements OnInit {
       id: i,
       x: coord[0] * (width / 3) + (width / 2),
       y: coord[1] * (height / 3) + (height / 2),
-      label: this.displayedColumns[i] // Label the node with the divisor
+      label: `v${this.displayedColumns[i]}`
     }));
 
     // Calculate the bounding box dimensions considering padding
@@ -188,5 +194,7 @@ export class GetAdjacencyMatrixComponent implements OnInit {
       .attr('font-size', '22px')
       .attr('fill', 'red')
       .attr('font-weight', '500');
+
+    this.isGraphCreated = true;
   }
 }
