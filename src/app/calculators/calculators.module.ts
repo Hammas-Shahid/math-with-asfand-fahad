@@ -29,6 +29,7 @@ import { PcaAnalysisComponent } from './comparison-analysis/pca-analysis/pca-ana
 import { HeatmapAnalysisComponent } from './comparison-analysis/heatmap-analysis/heatmap-analysis.component';
 import {BaseChartDirective, provideCharts, withDefaultRegisterables} from "ng2-charts";
 import { Chart, registerables } from 'chart.js';
+import { ClusterAnalysisComponent } from './comparison-analysis/cluster-analysis/cluster-analysis.component';
 
 Chart.register(...registerables);
 
@@ -46,7 +47,8 @@ Chart.register(...registerables);
     MantelTestAnalysisComponent,
     MdsAnalysisComponent,
     PcaAnalysisComponent,
-    HeatmapAnalysisComponent
+    HeatmapAnalysisComponent,
+    ClusterAnalysisComponent
   ],
   imports: [
     CommonModule,

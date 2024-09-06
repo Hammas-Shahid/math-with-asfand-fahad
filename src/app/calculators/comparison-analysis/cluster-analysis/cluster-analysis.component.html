@@ -1,0 +1,20 @@
+<div class="cluster-analysis">
+  <h3>Cluster Analysis Result</h3>
+  <div *ngIf="clusterResult1">
+    <h4>Clusters for Distance Matrix</h4>
+    <ul>
+      <li *ngFor="let cluster of clusterResult1; let i = index">
+        Cluster {{i + 1}}: {{cluster}}
+      </li>
+    </ul>
+  </div>
+
+  <div *ngIf="clusterResult2">
+    <h4>Clusters for Direct Distance Matrix</h4>
+    <ul>
+      <li *ngFor="let cluster of clusterResult2; let i = index">
+        Cluster {{i + 1}}: {{cluster}}
+      </li>
+    </ul>
+  </div>
+</div>

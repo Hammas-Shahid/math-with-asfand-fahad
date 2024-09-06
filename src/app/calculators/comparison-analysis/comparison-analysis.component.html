@@ -3,22 +3,25 @@
   <form [formGroup]="form1">
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Enter variables for Distance Matrix (comma-separated)</mat-label>
-      <input matInput formControlName="vars1" type="text" placeholder="e.g., 1, 2, 3, 4">
+      <input matInput formControlName="vars1" type="text" placeholder="e.g., 115, 79, 110, 110, 112, 110, 110, 110, 110, 110, 110">
     </mat-form-field>
   </form>
   <form [formGroup]="form2">
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Enter variables for Direct Distance Matrix (comma-separated)</mat-label>
-      <input matInput formControlName="vars2" type="text" placeholder="e.g., 4, 3, 2, 1">
+      <input matInput formControlName="vars2" type="text" placeholder="e.g., 1.7, 1.7, 1.8, 1.7, 1.8, 1.8, 1.8, 1.8, 1.8, 1.8, 1.8">
     </mat-form-field>
     <button mat-raised-button color="primary" (click)="calculateDataAndDistances()">Calculate</button>
   </form>
 
-  <div class="results" *ngIf="resultsVisible">
+  <div class="results" *ngIf="resultsVisible" id="results-section">
     <app-regression-analysis [distanceMatrix]="distanceMatrix" [directDistanceMatrix]="directDistanceMatrix"></app-regression-analysis>
     <app-mantel-test-analysis [distanceMatrix]="distanceMatrix" [directDistanceMatrix]="directDistanceMatrix"></app-mantel-test-analysis>
     <app-mds-analysis [distanceMatrix]="distanceMatrix" [directDistanceMatrix]="directDistanceMatrix"></app-mds-analysis>
     <app-pca-analysis [distanceMatrix]="distanceMatrix" [directDistanceMatrix]="directDistanceMatrix"></app-pca-analysis>
     <app-heatmap-analysis [distanceMatrix]="distanceMatrix" [directDistanceMatrix]="directDistanceMatrix"></app-heatmap-analysis>
+    <app-cluster-analysis [distanceMatrix]="distanceMatrix" [directDistanceMatrix]="directDistanceMatrix"></app-cluster-analysis>
   </div>
+
+<!--  <button mat-raised-button color="primary" (click)="exportResults()" *ngIf="resultsVisible" style="margin-top: 20px;">Export Results</button>-->
 </div>
