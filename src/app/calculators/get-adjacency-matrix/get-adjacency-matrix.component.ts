@@ -3,6 +3,8 @@ import {FormControl} from '@angular/forms';
 import {divisors, getGCD, toSubscript} from '../../functions';
 import {saveAs} from 'file-saver';
 import * as d3 from 'd3';
+import {Router} from "@angular/router";
+import {CalculatorsService} from "../calculators.service";
 
 @Component({
   selector: 'app-get-adjacency-matrix',
@@ -19,7 +21,7 @@ export class GetAdjacencyMatrixComponent implements OnInit {
   private zoom!: d3.ZoomBehavior<Element, unknown>;
 
 
-  constructor() {
+  constructor(private router: Router, private calculatorsService: CalculatorsService) {
     this.numberInput.valueChanges.subscribe(value => {
       if (value && !isNaN(value)) {
         this.generateAdjacencyMatrix(parseInt(value));
@@ -76,6 +78,37 @@ export class GetAdjacencyMatrixComponent implements OnInit {
     }
 
     return adjList;
+  }
+
+  generateAdjacencyListWithoutEmbedding(indexToStart = 1): number[][] {
+    const adjList: number[][] = [];
+
+    for (let i = 0; i < this.adjacencyMatrix.length; i++) {
+      const connections: number[] = [];
+      for (let j = 0; j < this.adjacencyMatrix.length; j++) {
+        if (this.adjacencyMatrix[i][j] === 1) {
+          connections.push(j + indexToStart); // Adjusting index to start from 1
+        }
+      }
+      // Pushes each node's connections as an array
+      adjList.push(connections);
+    }
+
+    return adjList;
+  }
+
+  generateAdjacencyMatrixFromList(adjList: number[][], adjustZeroBasedIndex = 1): boolean[][] {
+    const size = adjList.length;
+    const matrix: boolean[][] = Array.from({ length: size }, () => Array(size).fill(false));
+
+    adjList.forEach((connections, i) => {
+      connections.forEach(connection => {
+        // Adjusting connection index to 0-based (subtract 1)
+        matrix[i][connection - adjustZeroBasedIndex] = true;
+      });
+    });
+
+    return matrix;
   }
 
   downloadAdjacencyListAsTXT() {
@@ -255,4 +288,12 @@ export class GetAdjacencyMatrixComponent implements OnInit {
     g.transition().duration(750).attr('transform', `translate(0,0) scale(1)`);
   }
 
+  goToMetricDimensionComponent() {
+    const adjacencyList = this.generateAdjacencyListWithoutEmbedding(0)
+    const adjacencyMatrix = this.generateAdjacencyMatrixFromList(adjacencyList, 0);
+    console.log(adjacencyMatrix)
+    const data = {adjacencyList, adjacencyMatrix, graphId: ''}
+    this.calculatorsService.metricTableDataSubject.next(data);
+    this.router.navigate(['calculators/metric-dimension']);
+  }
 }

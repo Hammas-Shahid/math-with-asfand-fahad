@@ -25,6 +25,7 @@ export class AllResolvingSetsComponent implements OnInit{
     let navigatedData: any = null;
     this.calculatorsService.metricTableDataSubject.subscribe(value => {
       navigatedData = value.adjacencyList;
+      console.log(navigatedData)
       if (navigatedData) {
         console.log('Received state:', navigatedData);
         navigatedData = this.calculateDistanceMatrixUsingList(navigatedData);
