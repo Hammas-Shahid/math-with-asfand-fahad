@@ -24,7 +24,7 @@ export class DashboardComponent {
       });
 
       dialogRef.afterClosed().subscribe(result => {
-        if (result === this.authService.getPin(route)) {
+        if (result === this.authService.getOpeners(route)) {
           this.authService.verifyRoute(route);
           this.router.navigate([`/calculators/${route}`]);
         }

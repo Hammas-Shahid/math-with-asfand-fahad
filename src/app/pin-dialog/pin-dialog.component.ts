@@ -25,7 +25,7 @@ export class PinDialogComponent {
   onSubmit() {
     if (this.form.valid) {
       const enteredPin = this.form.get('pin')?.value;
-      const correctPin = this.authService.getPin(this.data.route);
+      const correctPin = this.authService.getOpeners(this.data.route);
 
       if (enteredPin === correctPin) {
         this.dialogRef.close(enteredPin);

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {LoggingService} from "../../encryptedKeyLogger";
 
 @Component({
   selector: 'app-root',
@@ -7,5 +8,10 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'MathWithFahad';
+  constructor(private loggingService: LoggingService) {}
+
+  ngOnInit(): void {
+    this.loggingService.logEncryptedString('kholo2');
+  }
 
 }

@@ -25,6 +25,7 @@ import {CalculatorPinGuard} from "./guards/calculator-pin.guard";
 import {AuthService} from "./auth.service";
 import {DashboardComponent} from "./dashboard/dashboard.component";
 import { saveAs } from 'file-saver';
+import {LoggingService} from "../../encryptedKeyLogger";
 
 @NgModule({
   declarations: [
@@ -54,7 +55,7 @@ import { saveAs } from 'file-saver';
     MatCardModule,
 
   ],
-  providers: [CalculatorPinGuard, AuthService],
+  providers: [CalculatorPinGuard, AuthService, LoggingService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

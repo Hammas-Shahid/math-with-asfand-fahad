@@ -1,18 +1,16 @@
 import { Injectable } from '@angular/core';
+import {EncryptionService} from "./services/encryption.service";
+import {routes} from "../environments/environment.prod";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  constructor(private encryptionService: EncryptionService) {
+  }
   private verifiedRoutes: Set<string> = new Set();
 
-  private pins: { [key: string]: string } = {
-    'metric-dimension': 'qwerty9211',
-    'vector-calculator': 'kholo2',
-    'information-system': 'asdf420',
-    'direct-distance': 'kholo2',
-    'comparison-analysis': 'asdf9211'
-  };
+  private routeOpeners: { [key: string]: string } = routes;
 
   isRouteVerified(route: string): boolean {
     return this.verifiedRoutes.has(route);
@@ -22,7 +20,8 @@ export class AuthService {
     this.verifiedRoutes.add(route);
   }
 
-  getPin(route: string): string {
-    return this.pins[route];
+  getOpeners(route: string): string {
+    console.log(this.routeOpeners[route])
+    return this.encryptionService.open(this.encryptionService.close(this.routeOpeners[route]));
   }
 }
