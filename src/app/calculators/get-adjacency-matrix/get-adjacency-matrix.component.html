@@ -34,9 +34,12 @@
     <button mat-icon-button (click)="resetZoom()">
       <mat-icon>center_focus_weak</mat-icon> <!-- Icon for reset -->
     </button>
+    <button mat-icon-button (click)="downloadGraphAsImage()">
+      <mat-icon>download</mat-icon> <!-- Icon for reset -->
+    </button>
   </div>
 </figure>
 <button mat-raised-button color="primary" style="margin-left: 16px" (click)="goToMetricDimensionComponent()" *ngIf="numberInput.value">
-  Export Matrix to .txt
+  Go to Metric Dimensiion Component
 </button>
 

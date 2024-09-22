@@ -159,7 +159,7 @@ export class GetAdjacencyMatrixComponent implements OnInit {
       id: i,
       x: coord[0] * (width / 3) + (width / 2),
       y: coord[1] * (height / 3) + (height / 2),
-      label: `v${this.displayedColumns[i]}`
+      label: `${this.displayedColumns[i]}`
     }));
 
     // Calculate the bounding box dimensions considering padding
@@ -292,8 +292,43 @@ export class GetAdjacencyMatrixComponent implements OnInit {
     const adjacencyList = this.generateAdjacencyListWithoutEmbedding(0)
     const adjacencyMatrix = this.generateAdjacencyMatrixFromList(adjacencyList, 0);
     console.log(adjacencyMatrix)
-    const data = {adjacencyList, adjacencyMatrix, graphId: ''}
+    const data = {adjacencyList, adjacencyMatrix, graphId: '', inputType: 'local', divs: this.displayedColumns}
     this.calculatorsService.metricTableDataSubject.next(data);
     this.router.navigate(['calculators/metric-dimension']);
   }
+
+  downloadGraphAsImage() {
+    const svgElement = this.graphContainer.nativeElement.querySelector('svg') as SVGSVGElement;
+
+    // Get the SVG's outer HTML
+    const svgString = new XMLSerializer().serializeToString(svgElement);
+
+    // Create a canvas element
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Set canvas dimensions based on the SVG element's dimensions
+    const svgBounds = svgElement.getBoundingClientRect();
+    canvas.width = svgBounds.width;
+    canvas.height = svgBounds.height;
+    ctx!.fillStyle = 'white';
+    ctx!.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Create an image and set its source to the SVG data URI
+    const img = new Image();
+    const svgBlob = new Blob([svgString], {type: 'image/svg+xml;charset=utf-8'});
+    const url = URL.createObjectURL(svgBlob);
+    img.onload = () => {
+      // Draw the SVG on the canvas
+      ctx!.drawImage(img, 0, 0);
+      URL.revokeObjectURL(url);
+
+      // Convert the canvas to a PNG and download it
+      canvas.toBlob((blob) => {
+        saveAs(blob!, 'graph.png');
+      });
+    };
+    img.src = url;
+  }
+
 }

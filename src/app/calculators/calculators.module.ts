@@ -37,6 +37,7 @@ import { OnlyMetricDimensionComponent } from './metric-dimension/only-metric-dim
 import { DiscernibilityMatrixComponent } from './metric-dimension/discernibility-matrix/discernibility-matrix.component';
 import { ReductsViaDiscernibilityMatrixComponent } from './metric-dimension/reducts-via-discernibility-matrix/reducts-via-discernibility-matrix.component';
 import {MatTab, MatTabContent, MatTabGroup} from "@angular/material/tabs";
+import { DistanceTableComponent } from './metric-dimension/distance-table/distance-table.component';
 
 Chart.register(...registerables);
 
@@ -61,7 +62,8 @@ Chart.register(...registerables);
     AllResolvingSetsComponent,
     OnlyMetricDimensionComponent,
     DiscernibilityMatrixComponent,
-    ReductsViaDiscernibilityMatrixComponent
+    ReductsViaDiscernibilityMatrixComponent,
+    DistanceTableComponent
   ],
   imports: [
     CommonModule,

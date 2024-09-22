@@ -19,17 +19,21 @@ export class DiscernibilityMatrixComponent implements OnInit{
   constructor(private calculatorsService: CalculatorsService) {}
 
   ngOnInit(): void {
-    let navigatedData: any = null;
-    this.calculatorsService.metricTableDataSubject.subscribe(value => {
-      navigatedData = value.adjacencyList;
-      if (navigatedData) {
-        this.title = `Graph Id: ${value.graphId}`;
-        console.log('Received state:', navigatedData);
-        navigatedData = this.calculateDistanceMatrixUsingList(navigatedData);
-        this.table = navigatedData as any;
+    let adjacencyList: any = null;
+    this.calculatorsService.metricTableDataSubject.subscribe(navigatedData => {
+      adjacencyList = navigatedData.adjacencyList;
+      this.navigatedData = navigatedData;
+      if (adjacencyList) {
+        this.title = `Graph Id: ${navigatedData.graphId}`;
+        console.log('Received state:', adjacencyList);
+        adjacencyList = this.calculateDistanceMatrixUsingList(adjacencyList);
+        this.table = adjacencyList as any;
         this.n = this.table.length;
+        if (navigatedData.inputType === 'local'){
+          this.displayedColumns = ['header', ...navigatedData.divs];
+        }
         this.generateTable(this.n, true);
-        this.adjacencyMatrixInformation = value.adjacencyMatrix.map((vertex: boolean[]) => {
+        this.adjacencyMatrixInformation = navigatedData.adjacencyMatrix.map((vertex: boolean[]) => {
           let count = 0;
           vertex.forEach(e => {
             if (e) count++;
@@ -44,6 +48,7 @@ export class DiscernibilityMatrixComponent implements OnInit{
     });
     console.log('Table after init:', this.table);
   }
+  navigatedData = null;
 
   generateTable(n: number, fromData: boolean = false): void {
     if (!fromData) {
@@ -52,7 +57,8 @@ export class DiscernibilityMatrixComponent implements OnInit{
         this.table[i][i] = 0;
       }
     }
-    this.displayedColumns = ['header', ...Array.from({ length: n }, (_, i) => `col${i + 1}`)];
+    if (this.navigatedData.inputType !== 'local')
+      this.displayedColumns = ['header', ...Array.from({ length: n }, (_, i) => `col${i + 1}`)];
   }
 
   updateValue(i: number, j: number, event: Event): void {
@@ -123,13 +129,29 @@ export class DiscernibilityMatrixComponent implements OnInit{
                 resolvent.push(index + 1);
               }
             }
-            resolvantsAgainstPairs.push([`(v_{${i}}, v_{${j}})`, resolvent]);
+            if (this.navigatedData.inputType !== 'local') {
+              resolvantsAgainstPairs.push([`(v_{${i}}, v_{${j}})`, resolvent]);
+            }
+            else{
+              const divs = this.displayedColumns.slice(1);
+              // const ii = this.displayedColumns.findIndex()
+            resolvantsAgainstPairs.push([`(${divs[i-1]}, ${divs[j-1]})`, resolvent]);
+            }
             resolvants.push(resolvent);
           }
         }
 
         const result = resolvantsAgainstPairs.map(e => {
-          const map = e[1].map(el => `v_{${el}}`);
+          let map = [];
+          if (this.navigatedData.inputType !== 'local') {
+            map = e[1].map(el => `v_{${el}}`);
+          }
+          else {
+            map = e[1].map(el => {
+              const divs = this.displayedColumns.slice(1);
+              return `${divs[el-1]}`
+            });
+          }
           return `$$${e[0]} =  \\{${map}\\}$$`;
         });
 

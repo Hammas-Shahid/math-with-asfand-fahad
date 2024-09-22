@@ -5,32 +5,59 @@
   <div *ngIf="data.resolvingSets.length > 0">
     <h3>All Resolving Sets:</h3>
     <ul>
-      <li *ngFor="let set of data.resolvingSets">
-        {{'{'}}<span *ngFor="let vertex of set; let last = last">
+      <ng-container *ngIf="inputType !== 'local'">
+        <li *ngFor="let set of data.resolvingSets">
+          {{'{'}}<span *ngFor="let vertex of set; let last = last">
           v<sub>{{vertex.substring(1)}}</sub>{{!last ? ', ' : ''}}
         </span>{{'}'}}
-      </li>
+        </li>
+      </ng-container>
+      <ng-container *ngIf="inputType == 'local'">
+        <li *ngFor="let set of data.resolvingSets">
+          {{'{'}}<span *ngFor="let vertex of set; let last = last">
+          {{vertex}}{{!last ? ', ' : ''}}
+        </span>{{'}'}}
+        </li>
+      </ng-container>
     </ul>
   </div>
 
   <div *ngIf="data.minCardinalitySets.length > 0">
     <h3>Minimum Cardinality Resolving Sets:</h3>
     <ul>
-      <li *ngFor="let set of data.minCardinalitySets">
-        {{'{'}}<span *ngFor="let vertex of set; let last = last">
+      <ng-container *ngIf="inputType !== 'local'">
+        <li *ngFor="let set of data.minCardinalitySets">
+          {{'{'}}<span *ngFor="let vertex of set; let last = last">
           v<sub>{{vertex.substring(1)}}</sub>{{!last ? ', ' : ''}}
         </span>{{'}'}}
-      </li>
+        </li>
+      </ng-container>
+      <ng-container *ngIf="inputType == 'local'">
+        <li *ngFor="let set of data.minCardinalitySets">
+          {{'{'}}<span *ngFor="let vertex of set; let last = last">
+          {{vertex}}{{!last ? ', ' : ''}}
+        </span>{{'}'}}
+        </li>
+      </ng-container>
     </ul>
   </div>
   <div *ngIf="data.minimalMetricSets.length > 0">
     <h3>Minimal Cardinality Resolving Sets:</h3>
     <ul>
-      <li *ngFor="let set of data.minimalMetricSets">
-        {{'{'}}<span *ngFor="let vertex of set; let last = last">
+      <ng-container *ngIf="inputType !== 'local'">
+        <li *ngFor="let set of data.minimalMetricSets">
+          {{'{'}}<span *ngFor="let vertex of set; let last = last">
           v<sub>{{vertex.substring(1)}}</sub>{{!last ? ', ' : ''}}
         </span>{{'}'}}
-      </li>
+        </li>
+      </ng-container>
+      <ng-container *ngIf="inputType == 'local'">
+        <li *ngFor="let set of data.minimalMetricSets">
+          {{'{'}}<span *ngFor="let vertex of set; let last = last">
+          {{vertex}}{{!last ? ', ' : ''}}
+        </span>{{'}'}}
+        </li>
+      </ng-container>
     </ul>
   </div>
     <h3>Metric Dimension: <span style="font-weight: normal">{{data.metricDimension}}</span></h3>

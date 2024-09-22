@@ -22,7 +22,7 @@ export class iframeViewerComponent {
 
   getAdjacencyMatrix() {
     return this.http.get(`https://houseofgraphs.org/api/graphs/${this.graphId}`).subscribe((res: any) => {
-      const data = {adjacencyList: res.adjacencyList, adjacencyMatrix: res.adjacencyMatrix, graphId: res.entity.graphId}
+      const data = {adjacencyList: res.adjacencyList, adjacencyMatrix: res.adjacencyMatrix, graphId: res.entity.graphId, inputType: 'hog'}
       console.log(data)
       this.calculatorsService.metricTableDataSubject.next(data)
 

@@ -22,24 +22,27 @@ export class AllResolvingSetsComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    let navigatedData: any = null;
-    this.calculatorsService.metricTableDataSubject.subscribe(value => {
-      navigatedData = value.adjacencyList;
-      console.log(navigatedData)
-      if (navigatedData) {
-        console.log('Received state:', navigatedData);
-        navigatedData = this.calculateDistanceMatrixUsingList(navigatedData);
-        this.table = navigatedData as any;
+    let adjacencyList: any = null;
+    this.calculatorsService.metricTableDataSubject.subscribe(navigatedData => {
+      this.navigatedData = navigatedData;
+      adjacencyList = navigatedData.adjacencyList;
+      console.log(adjacencyList)
+      if (adjacencyList) {
+        console.log('Received state:', adjacencyList);
+        adjacencyList = this.calculateDistanceMatrixUsingList(adjacencyList);
+        this.table = adjacencyList as any;
         this.n = this.table.length;
+        if (navigatedData.inputType === 'local'){
+          this.displayedColumns = ['header', ...navigatedData.divs];
+        }
         this.generateTable(this.n, true);
-        this.adjacencyMatrixInformation = value.adjacencyMatrix.map((vertex: boolean[])=> {
+        this.adjacencyMatrixInformation = navigatedData.adjacencyMatrix.map((vertex: boolean[])=> {
           let count = 0;
           vertex.forEach(e=> {
             if (e) count++
           })
           return count
         })
-        console.log(this.adjacencyMatrixInformation)
       } else {
         this.table = [];
         this.displayedColumns = [];
@@ -49,7 +52,9 @@ export class AllResolvingSetsComponent implements OnInit{
 
     console.log('Table after init:', this.table);
   }
+
   adjacencyMatrixInformation = [];
+  navigatedData = null;
 
   generateTable(n: number, fromData: boolean = false): void {
     if (!fromData) {
@@ -58,6 +63,7 @@ export class AllResolvingSetsComponent implements OnInit{
         this.table[i][i] = 0;
       }
     }
+    if (this.navigatedData.inputType !== 'local')
     this.displayedColumns = ['header', ...Array.from({length: n}, (_, i) => `col${i + 1}`)];
   }
 
@@ -89,7 +95,7 @@ export class AllResolvingSetsComponent implements OnInit{
         reject(error);
       };
 
-      worker.postMessage({n: this.n, table: this.table});
+      worker.postMessage({n: this.n, table: this.table, inputType: this.navigatedData?.inputType === 'local' ? 'local' : 'hog', displayedColumns: this.displayedColumns.slice(1)});
     });
   }
 
