@@ -12,6 +12,12 @@
   <button mat-raised-button color="primary" style="margin-left: 16px" (click)="downloadMatrixAsTXT()" *ngIf="numberInput.value">
     Export Matrix to .txt
   </button>
+  <mat-form-field appearance="fill" class="mlt-10 mr-16" style="margin-left: 16px">
+    <mat-label>Select Graph Type</mat-label>
+    <mat-select [formControl]="graphTypeFC">
+      <mat-option *ngFor="let type of graphTypes" [value]="type">{{type}}</mat-option>
+    </mat-select>
+  </mat-form-field>
 
   <!-- Displaying the adjacency matrix as a table -->
   <table *ngIf="adjacencyMatrix.length" mat-table [dataSource]="adjacencyMatrix" class="mat-elevation-z8">

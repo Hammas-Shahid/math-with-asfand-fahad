@@ -1,6 +1,6 @@
 import {Component, OnInit, ElementRef, ViewChild} from '@angular/core';
 import {FormControl} from '@angular/forms';
-import {divisors, getGCD, toSubscript} from '../../functions';
+import {getClassMembersOfDivisor, getDivisors, getGCD, isPrime, toSubscript} from '../../functions';
 import {saveAs} from 'file-saver';
 import * as d3 from 'd3';
 import {Router} from "@angular/router";
@@ -17,6 +17,8 @@ export class GetAdjacencyMatrixComponent implements OnInit {
   displayedColumns: string[] = [];
   embedding: number[][] = [];
   isGraphCreated = false;
+  graphTypes = ['Intersection Graph', 'Power Graph']
+  graphTypeFC = new FormControl(GraphTypes.intersection_graph)
   @ViewChild('graphContainer', {static: true}) private graphContainer!: ElementRef;
   private zoom!: d3.ZoomBehavior<Element, unknown>;
 
@@ -24,9 +26,24 @@ export class GetAdjacencyMatrixComponent implements OnInit {
   constructor(private router: Router, private calculatorsService: CalculatorsService) {
     this.numberInput.valueChanges.subscribe(value => {
       if (value && !isNaN(value)) {
-        this.generateAdjacencyMatrix(parseInt(value));
-        this.generateEmbedding();
-        this.drawGraph(); // Draw graph when data changes
+        this.getTotalNodes();
+        console.log(this.getAdjacencyListForPowerGraph());
+        if (this.graphTypeFC.value === GraphTypes.intersection_graph) {
+          this.generateAdjacencyMatrix(parseInt(value));
+          this.generateEmbedding();
+          this.drawGraph(); // Draw graph when data changes
+        }
+        else {
+          const adjacencyList =  this.getAdjacencyListForPowerGraph();
+          this.adjacencyMatrix = this.generateAdjacencyMatrixFromList(adjacencyList, 0).map(innerArray =>
+            innerArray.map(value => value ? 0 : 1)
+          );
+          let divs: number[] = getDivisors(value);
+          this.displayedColumns = this.totalVertices;
+          this.generateEmbedding();
+          this.drawGraph();
+        }
+        console.log(this.adjacencyMatrix)
       }
     });
   }
@@ -36,7 +53,7 @@ export class GetAdjacencyMatrixComponent implements OnInit {
   }
 
   generateAdjacencyMatrix(num: number): number[][] {
-    let divs: number[] = divisors(num);
+    let divs: number[] = getDivisors(num);
 
     const matrix: number[][] = Array.from({length: divs.length}, () => Array(divs.length).fill(0));
 
@@ -99,7 +116,7 @@ export class GetAdjacencyMatrixComponent implements OnInit {
 
   generateAdjacencyMatrixFromList(adjList: number[][], adjustZeroBasedIndex = 1): boolean[][] {
     const size = adjList.length;
-    const matrix: boolean[][] = Array.from({ length: size }, () => Array(size).fill(false));
+    const matrix: boolean[][] = Array.from({length: size}, () => Array(size).fill(false));
 
     adjList.forEach((connections, i) => {
       connections.forEach(connection => {
@@ -289,7 +306,7 @@ export class GetAdjacencyMatrixComponent implements OnInit {
   }
 
   goToMetricDimensionComponent() {
-    const adjacencyList = this.generateAdjacencyListWithoutEmbedding(0)
+    const adjacencyList = this.graphTypeFC.value === GraphTypes.intersection_graph ? this.generateAdjacencyListWithoutEmbedding(0) : this.getAdjacencyListForPowerGraph();
     const adjacencyMatrix = this.generateAdjacencyMatrixFromList(adjacencyList, 0);
     console.log(adjacencyMatrix)
     const data = {adjacencyList, adjacencyMatrix, graphId: '', inputType: 'local', divs: this.displayedColumns}
@@ -331,4 +348,122 @@ export class GetAdjacencyMatrixComponent implements OnInit {
     img.src = url;
   }
 
+  totalVertices = [];
+
+  getTotalNodes() {
+    this.totalVertices = [];
+    for (let i = 0; i < this.numberInput.value; i++) {
+      this.totalVertices.push(i);
+    }
+    console.log(this.totalVertices)
+  }
+
+  getAdjacencyListForPowerGraph() {
+    const n = this.numberInput.value;
+    const m = []; // elements whose GCD with 'n' is 1;
+    const divisorsOf_n = getDivisors(n);
+    const classOfDivisors = [];
+    const cumulativeClassOfDivisors = [];
+    let adjacencyList = [];
+    const remainingNodes = [];
+
+    for (let node of this.totalVertices) {
+
+      // populating 'm'
+      if (node !== 0 && getGCD(node, n) === 1) {
+        m.push(node);
+      }
+    }
+
+    for (let div of divisorsOf_n) {
+
+      classOfDivisors.push([div, getClassMembersOfDivisor(div, this.totalVertices)]);
+
+      const classesOfDiv = [];
+      // get classes of divisor
+      const divisorsOfDivisor = getDivisors(div);
+      for (let divOfDiv of divisorsOfDivisor) {
+        const classOfDivOfDiv = getClassMembersOfDivisor(divOfDiv, this.totalVertices);
+        classesOfDiv.push(...classOfDivOfDiv);
+      }
+      cumulativeClassOfDivisors.push([div, [...new Set(classesOfDiv)]])
+
+    }
+    console.log('m', m)
+
+    for (let node of this.totalVertices) {
+
+      if (node === 0 || node === 1 || m.includes(node)) {
+        const nodeIndexInVerticesArray = this.totalVertices.findIndex(v => v === node);
+        const list = structuredClone(this.totalVertices)
+        if (nodeIndexInVerticesArray > -1) {
+          list.splice(nodeIndexInVerticesArray, 1);
+        }
+        // const indexOfNode = list.findIndex(v=> v === node);
+        // list.splice(indexOfNode, 1);
+        adjacencyList.push([node, list]);
+      } else if (isPrime(node) && n % node === 0) {
+        let list = m;
+        if (!list.includes(0)) {
+          list = [0, ...list]
+        }
+        for (let vertex of this.totalVertices) {
+          if (getGCD(node, vertex) === node) {
+            list.push(vertex);
+          }
+        }
+        list = [...new Set(list)].sort();
+        const indexOfNode = list.findIndex(v => v === node);
+        if (indexOfNode > -1) {
+          list.splice(indexOfNode, 1);
+        }
+        adjacencyList.push([node, list])
+      } else if (!isPrime(node) && n % node === 0) {
+        let list = m;
+        if (!list.includes(0)) {
+          list = [0, ...list]
+        }
+        const classOfNode = classOfDivisors.find(c => c[0] === node)
+        const cumulativeClassOfNode = cumulativeClassOfDivisors.find(c => c[0] === node)
+        list.push(...classOfNode[1], ...cumulativeClassOfNode[1]);
+        list = [...new Set(list)].sort();
+        const indexOfNode = list.findIndex(v => v === node);
+        if (indexOfNode > -1) {
+          list.splice(indexOfNode, 1);
+        }
+        adjacencyList.push([node, list]);
+      } else {
+        remainingNodes.push(node);
+      }
+
+    }
+
+    console.log(remainingNodes)
+
+    for (let node of remainingNodes){
+      console.log(node);
+      console.log(adjacencyList)
+      const gcd = getGCD(node, n);
+      console.log(gcd);
+      let elementInAdjacencyList = structuredClone(adjacencyList.find(l => l[0] === gcd));
+      elementInAdjacencyList[0] = node;
+      const indexOfNode = elementInAdjacencyList[1].findIndex(v=> v === node);
+      if (indexOfNode){
+        elementInAdjacencyList[1].splice(indexOfNode, 1);
+      }
+      elementInAdjacencyList[1].push(gcd);
+      adjacencyList.push(elementInAdjacencyList);
+    }
+
+    adjacencyList = adjacencyList.sort((a,b)=> a[0] - b[0]);
+
+    return adjacencyList;
+
+  }
+
+}
+
+export enum GraphTypes {
+  intersection_graph = 'Intersection Graph',
+  power_graph = 'Power Graph'
 }

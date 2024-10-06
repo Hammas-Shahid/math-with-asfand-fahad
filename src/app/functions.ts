@@ -11,7 +11,7 @@ export function zeroDivisors(number: number) {
   return [...new Set(dev)].sort((a, b) => a - b);
 }
 
-export function divisors(number: number) {
+export function getDivisors(number: number) {
   let dev = [];
   for (let i = 2; i < number; i++) {
     for (let j = 2; j < number; j++) {
@@ -71,4 +71,16 @@ export function toSubscript(num: number): string {
     '9': '₉'
   };
   return num.toString().split('').map(digit => subscriptMap[digit]).join('');
+}
+
+export function getClassMembersOfDivisor(divisor: number, vertices: number[]){
+  const n = vertices.length;
+  const classMembers = [];
+  for (let vertex of vertices){
+  if (vertex === divisor) continue;
+    if (getGCD(n, vertex) === divisor) {
+    classMembers.push(vertex);
+  }
+  }
+  return classMembers;
 }

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {arraysEqual, divisors, getGCD, isPrime, zeroDivisors} from "../../functions";
+import {arraysEqual, getDivisors, getGCD, isPrime, zeroDivisors} from "../../functions";
 import {FormControl} from "@angular/forms";
 import {row} from "mathjs";
 
@@ -64,7 +64,7 @@ export class InformationSystemComponent {
     const num = parseInt(number);
     let divs: number[] = []
     if (!selectDivs) {
-      divs = divisors(num);
+      divs = getDivisors(num);
       this.divisors = divs;
     }else {
       divs = selectDivs.length ? selectDivs : this.divisors
