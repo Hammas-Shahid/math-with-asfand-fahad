@@ -27,25 +27,30 @@ export class GetAdjacencyMatrixComponent implements OnInit {
     this.numberInput.valueChanges.subscribe(value => {
       if (value && !isNaN(value)) {
         this.getTotalNodes();
-        console.log(this.getAdjacencyListForPowerGraph());
-        if (this.graphTypeFC.value === GraphTypes.intersection_graph) {
-          this.generateAdjacencyMatrix(parseInt(value));
-          this.generateEmbedding();
-          this.drawGraph(); // Draw graph when data changes
-        }
-        else {
-          const adjacencyList =  this.getAdjacencyListForPowerGraph();
-          this.adjacencyMatrix = this.generateAdjacencyMatrixFromList(adjacencyList, 0).map(innerArray =>
-            innerArray.map(value => value ? 0 : 1)
-          );
-          let divs: number[] = getDivisors(value);
-          this.displayedColumns = this.totalVertices;
-          this.generateEmbedding();
-          this.drawGraph();
-        }
-        console.log(this.adjacencyMatrix)
+        this.setAndProcessData(value)
       }
     });
+
+    this.graphTypeFC.valueChanges.subscribe(v=> this.setAndProcessData(this.numberInput.value))
+
+  }
+
+  setAndProcessData(n: number){
+    if (this.graphTypeFC.value === GraphTypes.intersection_graph) {
+      this.generateAdjacencyMatrix(n);
+      this.generateEmbedding();
+      this.drawGraph(); // Draw graph when data changes
+    }
+    else {
+      const adjacencyList =  this.getAdjacencyListForPowerGraph();
+      this.adjacencyMatrix = this.generateAdjacencyMatrixFromList(adjacencyList, 0).map(innerArray =>
+        innerArray.map(value => value ? 1 : 0)
+      );
+      let divs: number[] = getDivisors(n);
+      this.displayedColumns = this.totalVertices.map(v=> v.toString());
+      this.generateEmbedding();
+      this.drawGraph();
+    }
   }
 
   ngOnInit(): void {
@@ -355,7 +360,6 @@ export class GetAdjacencyMatrixComponent implements OnInit {
     for (let i = 0; i < this.numberInput.value; i++) {
       this.totalVertices.push(i);
     }
-    console.log(this.totalVertices)
   }
 
   getAdjacencyListForPowerGraph() {
@@ -389,7 +393,6 @@ export class GetAdjacencyMatrixComponent implements OnInit {
       cumulativeClassOfDivisors.push([div, [...new Set(classesOfDiv)]])
 
     }
-    console.log('m', m)
 
     for (let node of this.totalVertices) {
 
@@ -440,11 +443,8 @@ export class GetAdjacencyMatrixComponent implements OnInit {
 
     console.log(remainingNodes)
 
-    for (let node of remainingNodes){
-      console.log(node);
-      console.log(adjacencyList)
+    for (let node of remainingNodes){console.log(node);
       const gcd = getGCD(node, n);
-      console.log(gcd);
       let elementInAdjacencyList = structuredClone(adjacencyList.find(l => l[0] === gcd));
       elementInAdjacencyList[0] = node;
       const indexOfNode = elementInAdjacencyList[1].findIndex(v=> v === node);
@@ -457,7 +457,7 @@ export class GetAdjacencyMatrixComponent implements OnInit {
 
     adjacencyList = adjacencyList.sort((a,b)=> a[0] - b[0]);
 
-    return adjacencyList;
+    return adjacencyList.map(li=> li[1]);
 
   }
 
