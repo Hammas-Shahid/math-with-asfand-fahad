@@ -390,7 +390,7 @@ export class GetAdjacencyMatrixComponent implements OnInit {
         const classOfDivOfDiv = getClassMembersOfDivisor(divOfDiv, this.totalVertices);
         classesOfDiv.push(...classOfDivOfDiv);
       }
-      cumulativeClassOfDivisors.push([div, [...new Set(classesOfDiv)]])
+      cumulativeClassOfDivisors.push([div, [...new Set([...divisorsOfDivisor, ...classesOfDiv])]])
 
     }
 
