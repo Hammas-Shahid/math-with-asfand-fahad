@@ -239,14 +239,14 @@ export class AllResolvingSetsComponent implements OnInit{
     return true;
   }
 
-  // exportToExcel(): void {
-  //   const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(this.table);
-  //   const wb: XLSX.WorkBook = XLSX.utils.book_new();
-  //   XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-  //   XLSX.writeFile(wb, 'table.xlsx');
-  // }
-
   exportToExcel(): void {
+    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(this.table);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, 'table.xlsx');
+  }
+
+  exportToTex(): void {
     // Start building LaTeX content
     let latexContent = `\\documentclass{article}\n\\usepackage{array}\n\\begin{document}\n\\begin{tabular}{|${'c|'.repeat(this.table[0].length)}}\n\\hline\n`;
 
