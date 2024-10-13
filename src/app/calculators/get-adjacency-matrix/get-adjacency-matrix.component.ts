@@ -428,7 +428,11 @@ export class GetAdjacencyMatrixComponent implements OnInit {
         }
         const classOfNode = classOfDivisors.find(c => c[0] === node)
         const cumulativeClassOfNode = cumulativeClassOfDivisors.find(c => c[0] === node)
-        list.push(...classOfNode[1], ...cumulativeClassOfNode[1]);
+        const multiples =[]
+        for (let i =2 ; i < Math.ceil(n/node); i++ ) {
+          multiples.push(node*i);
+        }
+        list.push(...classOfNode[1], ...cumulativeClassOfNode[1], ...multiples);
         list = [...new Set(list)].sort();
         const indexOfNode = list.findIndex(v => v === node);
         if (indexOfNode > -1) {

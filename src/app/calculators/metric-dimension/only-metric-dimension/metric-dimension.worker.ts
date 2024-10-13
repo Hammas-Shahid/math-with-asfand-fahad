@@ -30,8 +30,8 @@ addEventListener('message', ({ data }) => {
 
 function calculateResolvingSets(n: number, table: (number | null)[][], maxSubsetLength?: number) {
   const vertices = Array.from({ length: n }, (_, i) => i + 1);
-  const getSubsets = getUpto20LacSubsets(vertices, maxSubsetLength);
-  const allSubsets = getSubsets.subsets;
+  const upto10LacSubsets = getUpto10LacSubsets(vertices, maxSubsetLength);
+  const allSubsets = upto10LacSubsets.subsets;
   let metricDimension = n;
 
   let resolvingSets: string[][] = [];
@@ -43,10 +43,10 @@ function calculateResolvingSets(n: number, table: (number | null)[][], maxSubset
     }
   }
 
-  return { resolvingSets, allFound: getSubsets.allFound, metricDimension };
+  return { resolvingSets, allFound: upto10LacSubsets.allFound, metricDimension };
 }
 
-function getUpto20LacSubsets(arr: number[], maxSubsetLength?: number) {
+function getUpto10LacSubsets(arr: number[], maxSubsetLength?: number) {
   let subsets: number[][] = [[]]; // Start with an empty subset
   let allFound = false;
 
@@ -57,8 +57,8 @@ function getUpto20LacSubsets(arr: number[], maxSubsetLength?: number) {
       if (!maxSubsetLength || subsetToCreate.length <= maxSubsetLength) {
         newSubsets.push(subsetToCreate);
       }
-      if (subsets.length + newSubsets.length >= 1000000) {
-        return { subsets: subsets.concat(newSubsets.slice(0, 1000000 - subsets.length)), allFound: true };
+      if (subsets.length + newSubsets.length >= 500000) {
+        return { subsets: subsets.concat(newSubsets.slice(0, 500000 - subsets.length)), allFound: true };
       }
     }
     subsets = subsets.concat(newSubsets);
