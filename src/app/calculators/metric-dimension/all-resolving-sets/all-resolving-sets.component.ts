@@ -239,11 +239,34 @@ export class AllResolvingSetsComponent implements OnInit{
     return true;
   }
 
+  // exportToExcel(): void {
+  //   const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(this.table);
+  //   const wb: XLSX.WorkBook = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+  //   XLSX.writeFile(wb, 'table.xlsx');
+  // }
+
   exportToExcel(): void {
-    const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(this.table);
-    const wb: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-    XLSX.writeFile(wb, 'table.xlsx');
+    // Start building LaTeX content
+    let latexContent = `\\documentclass{article}\n\\usepackage{array}\n\\begin{document}\n\\begin{tabular}{|${'c|'.repeat(this.table[0].length)}}\n\\hline\n`;
+
+    // Loop through the table array and convert rows to LaTeX table rows
+    this.table.forEach((row, rowIndex) => {
+      latexContent += row.join(' & ') + ' \\\\\n';  // Add & between cells, and \\ for line breaks
+      latexContent += '\\hline\n';                  // Add horizontal line after each row
+    });
+
+    // Close the tabular and document environment
+    latexContent += '\\end{tabular}\n\\end{document}';
+
+    // Create a Blob with LaTeX content
+    const blob = new Blob([latexContent], { type: 'text/plain;charset=utf-8' });
+
+    // Trigger file download
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'table.tex';
+    link.click();
   }
 
   exportGraphParamsToExcel(): void {
