@@ -247,17 +247,20 @@ export class AllResolvingSetsComponent implements OnInit{
   }
 
   exportToTex(): void {
-    // Start building LaTeX content
-    let latexContent = `\\documentclass{article}\n\\usepackage{array}\n\\begin{document}\n\\begin{tabular}{|${'c|'.repeat(this.table[0].length)}}\n\\hline\n`;
+    // Start building LaTeX content with table format
+    let latexContent = `\\documentclass{article}\n\\usepackage{amsmath}\n\\begin{document}\n\\[\n\\begin{array}{r${'c'.repeat(this.table[0].length)}}\n`;
 
-    // Loop through the table array and convert rows to LaTeX table rows
+    // Create the top header row
+    latexContent += ' & ' + this.table[0].map((_, i) => `v_{${i + 1}}`).join(' & ') + ' \\\\\n';  // Top header v1, v2, ...
+
+    // Loop through the table array to create each row with left-side header
     this.table.forEach((row, rowIndex) => {
-      latexContent += row.join(' & ') + ' \\\\\n';  // Add & between cells, and \\ for line breaks
-      latexContent += '\\hline\n';                  // Add horizontal line after each row
+      latexContent += `v_{${rowIndex + 1}} & `; // Left header
+      latexContent += row.map(cell => `v_{${cell}}`).join(' & ') + ' \\\\\n';  // Data cells with subscript numbers
     });
 
-    // Close the tabular and document environment
-    latexContent += '\\end{tabular}\n\\end{document}';
+    // Close the array and document
+    latexContent += '\\end{array}\n\\]\n\\end{document}';
 
     // Create a Blob with LaTeX content
     const blob = new Blob([latexContent], { type: 'text/plain;charset=utf-8' });
