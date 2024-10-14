@@ -247,20 +247,46 @@ export class AllResolvingSetsComponent implements OnInit{
   }
 
   exportToTex(): void {
-    // Start building LaTeX content with table format
-    let latexContent = `\\documentclass{article}\n\\usepackage{amsmath}\n\\begin{document}\n\\[\n\\begin{array}{r${'c'.repeat(this.table[0].length)}}\n`;
+    const isLandscape = this.table[0].length > 20;
 
-    // Create the top header row
-    latexContent += ' & ' + this.table[0].map((_, i) => `v_{${i + 1}}`).join(' & ') + ' \\\\\n';  // Top header v1, v2, ...
+    // Start building LaTeX content with optional landscape orientation
+    let latexContent = `
+  \\documentclass{article}
+  \\usepackage{amsmath}
+  \\usepackage{pdflscape}
+  \\usepackage[a4paper, margin=0.2in]{geometry}
+  \\begin{document}
+  \\noindent
+  `;
 
-    // Loop through the table array to create each row with left-side header
+    // Conditionally add landscape environment if isLandscape is true
+    if (isLandscape) {
+      latexContent += '\\begin{landscape}\n';
+    }
+
+    // Begin the table
+    latexContent += `\\begin{tabular}{r|${'c'.repeat(this.table[0].length)}}\n`;
+
+    // Create the top header row with a horizontal line after it
+    latexContent += ' & ' + this.table[0].map((_, i) => `$v_{${i + 1}}$`).join(' & ') + ' \\\\\n\\hline\n';  // Top header v1, v2, ...
+
+    // Loop through the table array to create each row with left-side header and vertical line after first column
     this.table.forEach((row, rowIndex) => {
-      latexContent += `v_{${rowIndex + 1}} & `; // Left header
-      latexContent += row.map(cell => `v_{${cell}}`).join(' & ') + ' \\\\\n';  // Data cells with subscript numbers
+      latexContent += `$v_{${rowIndex + 1}}$ & `; // Left header
+      // latexContent += row.map(cell => `$v_{${cell}}$`).join(' & ') + ' \\\\\n';  // Data cells with subscript numbers
+      latexContent += row.join(' & ') + ' \\\\\n';  // Data cells with subscript numbers
     });
 
-    // Close the array and document
-    latexContent += '\\end{array}\n\\]\n\\end{document}';
+    // End the table
+    latexContent += '\\end{tabular}\n';
+
+    // Conditionally close landscape environment if isLandscape is true
+    if (isLandscape) {
+      latexContent += '\\end{landscape}\n';
+    }
+
+    // End the document
+    latexContent += '\\end{document}';
 
     // Create a Blob with LaTeX content
     const blob = new Blob([latexContent], { type: 'text/plain;charset=utf-8' });
